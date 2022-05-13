@@ -12,10 +12,13 @@ public class Course {
     private Long id;
     private String title;
     private Double price;
+    @ManyToMany
     private List<CourseCategory> categories;
     private CourseDifficulty difficulty;
+    @ElementCollection
     private List<String> scopes;
     private String description;
+    @OneToMany
     private List<CourseSection> sections;
 
     public Course(Long id, String title, Double price, List<CourseCategory> categories, CourseDifficulty difficulty, List<String> scopes, String description, List<CourseSection> sections) {

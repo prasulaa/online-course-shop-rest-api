@@ -11,6 +11,7 @@ public class CourseCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String category;
+    @OneToMany
     private List<CourseCategory> subcategories;
 
     public CourseCategory(Long id, String category, List<CourseCategory> subcategories) {

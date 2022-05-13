@@ -12,7 +12,9 @@ public class User {
     private Long id;
     private String username;
     private String passwordHash;
+    @ManyToMany
     private List<Course> boughtCourses;
+    @OneToMany
     private List<Course> releasedCourses;
 
     public User(Long id, String username, String passwordHash, List<Course> boughtCourses, List<Course> releasedCourses) {

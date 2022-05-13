@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.edu.pw.restapi.domain.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<Long, User> {
+public interface UserRepository extends JpaRepository<User, Long> {
 }

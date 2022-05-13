@@ -11,6 +11,7 @@ public class CourseSection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @OneToMany
     private List<CourseLesson> lessons;
 
     public CourseSection(Long id, String name, List<CourseLesson> lessons) {

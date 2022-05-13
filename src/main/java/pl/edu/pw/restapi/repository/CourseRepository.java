@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import pl.edu.pw.restapi.domain.Course;
 
 @Repository
-public interface CourseRepository extends JpaRepository<Long, Course> {
+public interface CourseRepository extends JpaRepository<Course, Long> {
 }
