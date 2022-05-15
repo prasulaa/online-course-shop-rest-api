@@ -11,11 +11,16 @@ public class CourseSection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<CourseLesson> lessons;
 
     public CourseSection(Long id, String name, List<CourseLesson> lessons) {
         this.id = id;
+        this.name = name;
+        this.lessons = lessons;
+    }
+
+    public CourseSection(String name, List<CourseLesson> lessons) {
         this.name = name;
         this.lessons = lessons;
     }

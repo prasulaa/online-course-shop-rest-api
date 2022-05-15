@@ -18,6 +18,11 @@ public class CourseLesson {
         this.data = data;
     }
 
+    public CourseLesson(String name, String data) {
+        this.name = name;
+        this.data = data;
+    }
+
     public CourseLesson() {
     }
 

@@ -18,10 +18,11 @@ public class Course {
     @ElementCollection
     private List<String> scopes;
     private String description;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<CourseSection> sections;
+    private String thumbnail;
 
-    public Course(Long id, String title, Double price, List<CourseCategory> categories, CourseDifficulty difficulty, List<String> scopes, String description, List<CourseSection> sections) {
+    public Course(Long id, String title, Double price, List<CourseCategory> categories, CourseDifficulty difficulty, List<String> scopes, String description, List<CourseSection> sections, String thumbnail) {
         this.id = id;
         this.title = title;
         this.price = price;
@@ -30,6 +31,7 @@ public class Course {
         this.scopes = scopes;
         this.description = description;
         this.sections = sections;
+        this.thumbnail = thumbnail;
     }
 
     public Course() {
@@ -97,5 +99,13 @@ public class Course {
 
     public void setSections(List<CourseSection> sections) {
         this.sections = sections;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

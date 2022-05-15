@@ -20,6 +20,10 @@ public class CourseCategory {
         this.subcategories = subcategories;
     }
 
+    public CourseCategory(String category) {
+        this.category = category;
+    }
+
     public CourseCategory() {
     }
 
