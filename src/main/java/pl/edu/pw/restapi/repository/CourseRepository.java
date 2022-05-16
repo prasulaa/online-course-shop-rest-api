@@ -1,5 +1,6 @@
 package pl.edu.pw.restapi.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,6 +25,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                          @Param("categories") List<Long> categories,
                          @Param("difficulties") List<Long> difficulties,
                          @Param("priceMin") Double priceMin,
-                         @Param("priceMax") Double priceMax);
+                         @Param("priceMax") Double priceMax,
+                         Pageable pageable);
 
 }

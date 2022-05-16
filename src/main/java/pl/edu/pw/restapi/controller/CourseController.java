@@ -1,5 +1,6 @@
 package pl.edu.pw.restapi.controller;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,16 +22,18 @@ public class CourseController {
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }
-
-    //TODO paging and sorting
+    
     @GetMapping
     public ResponseEntity<?> getCourses(@RequestParam(value = "title", required = false) String title,
                                         @RequestParam(value = "category", required = false) List<Long> categories,
                                         @RequestParam(value = "difficulty", required = false) List<Long> difficulties,
                                         @RequestParam(value = "priceMin", required = false) Double priceMin,
-                                        @RequestParam(value = "priceMax", required = false) Double priceMax) {
+                                        @RequestParam(value = "priceMax", required = false) Double priceMax,
+                                        @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                        @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                        @RequestParam(value = "sort", required = false)Sort.Direction sort) {
         try {
-            List<CourseDTO> courses = courseService.getCourses(title, categories, difficulties, priceMin, priceMax);
+            List<CourseDTO> courses = courseService.getCourses(title, categories, difficulties, priceMin, priceMax, pageNumber, pageSize, sort);
             return ResponseEntity.ok(courses);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
