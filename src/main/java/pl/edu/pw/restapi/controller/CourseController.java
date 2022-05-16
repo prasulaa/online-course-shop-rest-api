@@ -3,14 +3,13 @@ package pl.edu.pw.restapi.controller;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseDTO;
+import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 import pl.edu.pw.restapi.service.CourseService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @RestController
@@ -39,6 +38,18 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("{id}/details")
+    public ResponseEntity<?> getCourseDetails(@PathVariable("id") Long id) {
+        try {
+            CourseDetailsDTO course = courseService.getCourseDetails(id);
+            return ResponseEntity.ok(course);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -61,8 +61,8 @@ public class DbInit implements CommandLineRunner {
         javaLessons1.add(new CourseLesson("1-2", "Data java 2"));
 
         List<CourseLesson> javaLessons2 = new ArrayList<>();
-        javaLessons1.add(new CourseLesson("2-1", "Data java 3"));
-        javaLessons1.add(new CourseLesson("2-2", "Data java 4"));
+        javaLessons2.add(new CourseLesson("2-1", "Data java 3"));
+        javaLessons2.add(new CourseLesson("2-2", "Data java 4"));
 
         List<CourseSection> javaSections = new ArrayList<>();
         javaSections.add(new CourseSection("Section 1", javaLessons1));

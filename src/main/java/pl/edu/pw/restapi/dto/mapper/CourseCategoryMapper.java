@@ -1,6 +1,5 @@
 package pl.edu.pw.restapi.dto.mapper;
 
-import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseCategory;
 import pl.edu.pw.restapi.dto.CourseCategoryDTO;
 
@@ -8,6 +7,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseCategoryMapper {
+
+    public static List<String> mapNames(List<CourseCategory> categories) {
+        if (categories == null) {
+            return null;
+        } else {
+            List<String> categoryNames = new ArrayList<>();
+
+            for (CourseCategory c : categories) {
+                categoryNames.add(c.getCategory());
+            }
+
+            return categoryNames;
+        }
+    }
 
     public static List<CourseCategoryDTO> map(List<CourseCategory> categories) {
         if (categories == null) {

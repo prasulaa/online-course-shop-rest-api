@@ -6,9 +6,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.dto.CourseDTO;
+import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseMapper;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -26,6 +28,12 @@ public class CourseServiceImpl implements CourseService {
         Pageable pageable = getPageable(pageNumber, pageSize, sort);
         List<Course> courses = courseRepository.findAll(title, categories, difficulties, priceMin, priceMax, pageable);
         return CourseMapper.map(courses);
+    }
+
+    @Override
+    public CourseDetailsDTO getCourseDetails(Long id) {
+        Course course = courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id + " not found"));
+        return CourseMapper.mapDetails(course);
     }
 
     private Pageable getPageable(Integer pageNumber, Integer pageSize, Sort.Direction sort) {
