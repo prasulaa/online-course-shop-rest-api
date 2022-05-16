@@ -22,7 +22,7 @@ public class CourseController {
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }
-    
+
     @GetMapping
     public ResponseEntity<?> getCourses(@RequestParam(value = "title", required = false) String title,
                                         @RequestParam(value = "category", required = false) List<Long> categories,
@@ -31,7 +31,7 @@ public class CourseController {
                                         @RequestParam(value = "priceMax", required = false) Double priceMax,
                                         @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                         @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                        @RequestParam(value = "sort", required = false)Sort.Direction sort) {
+                                        @RequestParam(value = "sort", required = false) Sort.Direction sort) {
         try {
             List<CourseDTO> courses = courseService.getCourses(title, categories, difficulties, priceMin, priceMax, pageNumber, pageSize, sort);
             return ResponseEntity.ok(courses);

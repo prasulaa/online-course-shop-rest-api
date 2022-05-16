@@ -26,11 +26,12 @@ public class CourseMapper {
         if (course == null) {
             return null;
         } else {
-            return new CourseDTO(
-                    course.getId(),
-                    course.getTitle(),
-                    course.getThumbnail(),
-                    course.getPrice());
+            return CourseDTO.builder()
+                    .id(course.getId())
+                    .title(course.getTitle())
+                    .thumbnail(course.getThumbnail())
+                    .price(course.getPrice())
+                    .build();
         }
     }
 
