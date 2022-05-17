@@ -7,6 +7,7 @@ import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CourseMapper {
 
@@ -14,13 +15,9 @@ public class CourseMapper {
         if (courses == null) {
             return null;
         } else {
-            List<CourseDTO> mappedCourses = new ArrayList<>();
-
-            for (Course c: courses) {
-                mappedCourses.add(map(c));
-            }
-
-            return mappedCourses;
+            return courses.stream()
+                    .map(CourseMapper::map)
+                    .collect(Collectors.toList());
         }
     }
 

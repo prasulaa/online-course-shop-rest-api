@@ -3,8 +3,8 @@ package pl.edu.pw.restapi.dto.mapper;
 import pl.edu.pw.restapi.domain.CourseSection;
 import pl.edu.pw.restapi.dto.CourseDetailsSectionDTO;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CourseSectionMapper {
 
@@ -12,13 +12,9 @@ public class CourseSectionMapper {
         if (sections == null) {
             return null;
         } else {
-            List<CourseDetailsSectionDTO> mappedSections = new ArrayList<>();
-
-            for (CourseSection s: sections) {
-                mappedSections.add(map(s));
-            }
-
-            return mappedSections;
+            return sections.stream()
+                    .map(CourseSectionMapper::map)
+                    .collect(Collectors.toList());
         }
     }
 

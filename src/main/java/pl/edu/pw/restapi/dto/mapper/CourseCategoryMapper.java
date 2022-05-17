@@ -5,6 +5,7 @@ import pl.edu.pw.restapi.dto.CourseCategoryDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CourseCategoryMapper {
 
@@ -12,13 +13,9 @@ public class CourseCategoryMapper {
         if (categories == null) {
             return null;
         } else {
-            List<String> categoryNames = new ArrayList<>();
-
-            for (CourseCategory c : categories) {
-                categoryNames.add(c.getCategory());
-            }
-
-            return categoryNames;
+            return categories.stream()
+                    .map(CourseCategory::getCategory)
+                    .collect(Collectors.toList());
         }
     }
 
@@ -80,13 +77,9 @@ public class CourseCategoryMapper {
     }
 
     private static List<CourseCategoryDTO> mapSubcategories(List<CourseCategory> categories) {
-        List<CourseCategoryDTO> mappedCategories = new ArrayList<>();
-
-        for (CourseCategory c : categories) {
-            mappedCategories.add(map(c));
-        }
-
-        return mappedCategories;
+        return categories.stream()
+                .map(CourseCategoryMapper::map)
+                .collect(Collectors.toList());
     }
 
 }
