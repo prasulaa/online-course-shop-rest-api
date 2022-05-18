@@ -9,7 +9,9 @@ import pl.edu.pw.restapi.domain.CourseCategory;
 import pl.edu.pw.restapi.dto.CourseDTO;
 import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 import pl.edu.pw.restapi.dto.CreateCourseDTO;
+import pl.edu.pw.restapi.dto.UpdateCourseDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseMapper;
+import pl.edu.pw.restapi.dto.updater.CourseUpdater;
 import pl.edu.pw.restapi.repository.CourseCategoryRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
@@ -52,11 +54,32 @@ public class CourseServiceImpl implements CourseService {
         return CourseMapper.mapDetails(mappedCourse);
     }
 
+    @Override
+    public CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id) {
+        Course courseToUpdate = courseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Course id=" + id + " does not exist"));
+
+        updateCourse(course, courseToUpdate);
+        courseRepository.save(courseToUpdate);
+
+        return CourseMapper.mapDetails(courseToUpdate);
+    }
+
+    private void updateCourse(UpdateCourseDTO course, Course courseToUpdate) {
+        List<CourseCategory> categories = getCourseCategories(course.getCategories());
+        CourseUpdater courseUpdater = new CourseUpdater();
+        courseUpdater.update(course, courseToUpdate, categories);
+    }
+
     private List<CourseCategory> getCourseCategories(List<Long> ids) {
-        return ids.stream()
-                .map(id -> courseCategoryRepository.findById(id)
-                                .orElseThrow(() -> new IllegalArgumentException("Category id=" + id + " does not exist")))
-                .collect(Collectors.toList());
+        if (ids == null) {
+            return null;
+        } else {
+            return ids.stream()
+                    .map(id -> courseCategoryRepository.findById(id)
+                            .orElseThrow(() -> new IllegalArgumentException("Category id=" + id + " does not exist")))
+                    .collect(Collectors.toList());
+        }
     }
 
     private Pageable getPageable(Integer pageNumber, Integer pageSize, Sort.Direction sort) {

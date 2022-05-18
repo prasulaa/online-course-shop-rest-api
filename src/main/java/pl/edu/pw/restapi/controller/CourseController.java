@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseDTO;
 import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 import pl.edu.pw.restapi.dto.CreateCourseDTO;
+import pl.edu.pw.restapi.dto.UpdateCourseDTO;
 import pl.edu.pw.restapi.service.CourseService;
 
 import javax.persistence.EntityNotFoundException;
@@ -17,6 +18,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/course")
 public class CourseController {
+
+    //TODO logger
 
     private final CourseService courseService;
 
@@ -60,9 +63,26 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<?> createCourse(@RequestBody @Valid CreateCourseDTO course) {
         //TODO check if forbidden
+        // check if each scope is empty
         try {
             CourseDetailsDTO returnDetails = courseService.createCourse(course);
             return new ResponseEntity<>(returnDetails, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<?> updateCourse(@RequestBody UpdateCourseDTO course, @PathVariable("id") Long id) {
+        //TODO check if forbidden
+        // check if each scope is empty
+        try {
+            CourseDetailsDTO returnDetails = courseService.updateCourse(course, id);
+            return ResponseEntity.ok(returnDetails);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

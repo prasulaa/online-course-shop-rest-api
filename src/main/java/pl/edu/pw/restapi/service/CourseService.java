@@ -4,6 +4,7 @@ import org.springframework.data.domain.Sort;
 import pl.edu.pw.restapi.dto.CourseDTO;
 import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 import pl.edu.pw.restapi.dto.CreateCourseDTO;
+import pl.edu.pw.restapi.dto.UpdateCourseDTO;
 
 import java.util.List;
 
@@ -15,5 +16,7 @@ public interface CourseService {
     CourseDetailsDTO getCourseDetails(Long id);
 
     CourseDetailsDTO createCourse(CreateCourseDTO course);
+
+    CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id);
 
 }
