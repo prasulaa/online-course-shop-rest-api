@@ -41,6 +41,7 @@ public class CourseMapper {
             return CourseDetailsDTO.builder()
                     .id(course.getId())
                     .title(course.getTitle())
+                    .thumbnail(course.getThumbnail())
                     .price(course.getPrice())
                     .categories(CourseCategoryMapper.mapNames(course.getCategories()))
                     .difficulty(course.getDifficulty())

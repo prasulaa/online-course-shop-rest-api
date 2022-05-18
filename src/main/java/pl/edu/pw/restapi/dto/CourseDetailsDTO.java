@@ -12,6 +12,7 @@ public class CourseDetailsDTO {
 
     private Long id;
     private String title;
+    private String thumbnail;
     private Double price;
     private List<String> categories;
     private CourseDifficulty difficulty;
