@@ -4,8 +4,10 @@ import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseCategory;
 import pl.edu.pw.restapi.dto.CourseDTO;
 import pl.edu.pw.restapi.dto.CourseDetailsDTO;
+import pl.edu.pw.restapi.dto.CreateCourseDTO;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +50,23 @@ public class CourseMapper {
                     .scopes(course.getScopes())
                     .description(course.getDescription())
                     .sections(CourseSectionMapper.map(course.getSections()))
+                    .build();
+        }
+    }
+
+    public static Course map(CreateCourseDTO course, List<CourseCategory> categories) {
+        if (course == null) {
+            return null;
+        } else {
+            return Course.builder()
+                    .title(course.getTitle())
+                    .thumbnail(course.getThumbnail())
+                    .price(course.getPrice())
+                    .categories(categories)
+                    .difficulty(course.getDifficulty())
+                    .scopes(course.getScopes())
+                    .description(course.getDescription())
+                    .sections(new ArrayList<>())
                     .build();
         }
     }

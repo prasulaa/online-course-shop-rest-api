@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseDTO;
 import pl.edu.pw.restapi.dto.CourseDetailsDTO;
+import pl.edu.pw.restapi.dto.CreateCourseDTO;
 import pl.edu.pw.restapi.service.CourseService;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,6 +46,7 @@ public class CourseController {
 
     @GetMapping("{id}/details")
     public ResponseEntity<?> getCourseDetails(@PathVariable("id") Long id) {
+        //TODO check if forbidden
         try {
             CourseDetailsDTO course = courseService.getCourseDetails(id);
             return ResponseEntity.ok(course);
@@ -51,6 +54,19 @@ public class CourseController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createCourse(@RequestBody @Valid CreateCourseDTO course) {
+        //TODO check if forbidden
+        try {
+            CourseDetailsDTO returnDetails = courseService.createCourse(course);
+            return new ResponseEntity<>(returnDetails, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

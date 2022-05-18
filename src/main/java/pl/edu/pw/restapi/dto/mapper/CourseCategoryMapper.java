@@ -27,6 +27,18 @@ public class CourseCategoryMapper {
         }
     }
 
+    public static CourseCategoryDTO map(CourseCategory category) {
+        if (category == null) {
+            return null;
+        } else {
+            return CourseCategoryDTO.builder()
+                    .id(category.getId())
+                    .name(category.getCategory())
+                    .subcategories(mapSubcategories(category.getSubcategories()))
+                    .build();
+        }
+    }
+
     private static List<CourseCategoryDTO> mapDistinct(List<CourseCategory> categories) {
         int size = categories.size();
         List<CourseCategoryDTO> mappedCategories = new ArrayList<>();
@@ -62,18 +74,6 @@ public class CourseCategoryMapper {
             }
         }
         return false;
-    }
-
-    public static CourseCategoryDTO map(CourseCategory category) {
-        if (category == null) {
-            return null;
-        } else {
-            return CourseCategoryDTO.builder()
-                    .id(category.getId())
-                    .name(category.getCategory())
-                    .subcategories(mapSubcategories(category.getSubcategories()))
-                    .build();
-        }
     }
 
     private static List<CourseCategoryDTO> mapSubcategories(List<CourseCategory> categories) {

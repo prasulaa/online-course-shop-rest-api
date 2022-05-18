@@ -5,21 +5,27 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
+import pl.edu.pw.restapi.domain.CourseCategory;
 import pl.edu.pw.restapi.dto.CourseDTO;
 import pl.edu.pw.restapi.dto.CourseDetailsDTO;
+import pl.edu.pw.restapi.dto.CreateCourseDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseMapper;
+import pl.edu.pw.restapi.repository.CourseCategoryRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final CourseCategoryRepository courseCategoryRepository;
 
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, CourseCategoryRepository courseCategoryRepository) {
         this.courseRepository = courseRepository;
+        this.courseCategoryRepository = courseCategoryRepository;
     }
 
     @Override
@@ -34,6 +40,23 @@ public class CourseServiceImpl implements CourseService {
     public CourseDetailsDTO getCourseDetails(Long id) {
         Course course = courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id + " not found"));
         return CourseMapper.mapDetails(course);
+    }
+
+    @Override
+    public CourseDetailsDTO createCourse(CreateCourseDTO course) {
+        List<CourseCategory> categories = getCourseCategories(course.getCategories());
+        Course mappedCourse = CourseMapper.map(course, categories);
+
+        courseRepository.save(mappedCourse);
+
+        return CourseMapper.mapDetails(mappedCourse);
+    }
+
+    private List<CourseCategory> getCourseCategories(List<Long> ids) {
+        return ids.stream()
+                .map(id -> courseCategoryRepository.findById(id)
+                                .orElseThrow(() -> new IllegalArgumentException("Category id=" + id + " does not exist")))
+                .collect(Collectors.toList());
     }
 
     private Pageable getPageable(Integer pageNumber, Integer pageSize, Sort.Direction sort) {
