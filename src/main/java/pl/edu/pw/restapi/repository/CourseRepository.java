@@ -12,7 +12,8 @@ import java.util.List;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    @Query(nativeQuery = true, value = "select * from course c where " +
+    @Query(nativeQuery = true, value =
+            "select * from course c where " +
             "(:title is null or c.title like CONCAT('%', :title, '%')) and " +
             "((:difficulties) is null or c.difficulty in (:difficulties)) and " +
             "(:priceMin is null or c.price >= :priceMin) and " +

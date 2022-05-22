@@ -18,6 +18,6 @@ public class CourseDetailsDTO {
     private CourseDifficulty difficulty;
     private List<String> scopes;
     private String description;
-    private List<CourseDetailsSectionDTO> sections;
+    private List<CourseSectionDTO> sections;
 
 }

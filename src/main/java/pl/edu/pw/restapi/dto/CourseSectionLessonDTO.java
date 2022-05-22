@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class CourseDetailsLessonDTO {
+public class CourseSectionLessonDTO {
 
     private Long id;
     private String name;

@@ -7,10 +7,10 @@ import java.util.List;
 
 @Builder
 @Getter
-public class CourseDetailsSectionDTO {
+public class CourseSectionDTO {
 
     private Long id;
     private String name;
-    private List<CourseDetailsLessonDTO> lessons;
+    private List<CourseSectionLessonDTO> lessons;
 
 }

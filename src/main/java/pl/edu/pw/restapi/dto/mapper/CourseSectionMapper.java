@@ -1,14 +1,16 @@
 package pl.edu.pw.restapi.dto.mapper;
 
 import pl.edu.pw.restapi.domain.CourseSection;
-import pl.edu.pw.restapi.dto.CourseDetailsSectionDTO;
+import pl.edu.pw.restapi.dto.CourseSectionDTO;
+import pl.edu.pw.restapi.dto.CreateCourseSectionDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CourseSectionMapper {
 
-    public static List<CourseDetailsSectionDTO> map(List<CourseSection> sections) {
+    public static List<CourseSectionDTO> map(List<CourseSection> sections) {
         if (sections == null) {
             return null;
         } else {
@@ -18,14 +20,25 @@ public class CourseSectionMapper {
         }
     }
 
-    public static CourseDetailsSectionDTO map(CourseSection section) {
+    public static CourseSectionDTO map(CourseSection section) {
         if (section == null) {
             return null;
         } else {
-            return CourseDetailsSectionDTO.builder()
+            return CourseSectionDTO.builder()
                     .id(section.getId())
                     .name(section.getName())
                     .lessons(CourseLessonMapper.map(section.getLessons()))
+                    .build();
+        }
+    }
+
+    public static CourseSection map(CreateCourseSectionDTO section) {
+        if (section == null) {
+            return null;
+        } else {
+            return CourseSection.builder()
+                    .name(section.getName())
+                    .lessons(new ArrayList<>())
                     .build();
         }
     }

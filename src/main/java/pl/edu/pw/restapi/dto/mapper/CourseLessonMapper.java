@@ -1,14 +1,14 @@
 package pl.edu.pw.restapi.dto.mapper;
 
 import pl.edu.pw.restapi.domain.CourseLesson;
-import pl.edu.pw.restapi.dto.CourseDetailsLessonDTO;
+import pl.edu.pw.restapi.dto.CourseSectionLessonDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CourseLessonMapper {
 
-    public static List<CourseDetailsLessonDTO> map(List<CourseLesson> lessons) {
+    public static List<CourseSectionLessonDTO> map(List<CourseLesson> lessons) {
         if (lessons == null) {
             return null;
         } else {
@@ -18,11 +18,11 @@ public class CourseLessonMapper {
         }
     }
 
-    public static CourseDetailsLessonDTO map(CourseLesson lesson) {
+    public static CourseSectionLessonDTO map(CourseLesson lesson) {
         if (lesson == null) {
             return null;
         } else {
-            return CourseDetailsLessonDTO.builder()
+            return CourseSectionLessonDTO.builder()
                     .id(lesson.getId())
                     .name(lesson.getName())
                     .build();
