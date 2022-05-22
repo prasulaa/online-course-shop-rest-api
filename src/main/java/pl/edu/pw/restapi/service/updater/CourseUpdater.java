@@ -1,4 +1,4 @@
-package pl.edu.pw.restapi.dto.updater;
+package pl.edu.pw.restapi.service.updater;
 
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseCategory;

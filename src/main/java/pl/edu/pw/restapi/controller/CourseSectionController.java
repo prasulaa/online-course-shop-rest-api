@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseSectionDTO;
 import pl.edu.pw.restapi.dto.CreateCourseSectionDTO;
+import pl.edu.pw.restapi.dto.UpdateCourseSectionDTO;
 import pl.edu.pw.restapi.service.CourseSectionService;
 
 import javax.persistence.EntityNotFoundException;
@@ -41,6 +42,22 @@ public class CourseSectionController {
         try {
             CourseSectionDTO createdSection = courseSectionService.createCourseSection(courseId, section);
             return new ResponseEntity<>(createdSection, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("{sectionId}")
+    public ResponseEntity<?> updateCourseSection(@PathVariable("courseId") Long courseId,
+                                                 @PathVariable("sectionId") Long sectionId,
+                                                 @RequestBody @Valid UpdateCourseSectionDTO section) {
+        try {
+            CourseSectionDTO updatedSection = courseSectionService.updateCourseSection(courseId, sectionId, section);
+            return ResponseEntity.ok(updatedSection);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (EntityNotFoundException e) {

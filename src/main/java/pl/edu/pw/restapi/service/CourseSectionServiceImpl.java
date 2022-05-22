@@ -5,6 +5,7 @@ import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseSection;
 import pl.edu.pw.restapi.dto.CourseSectionDTO;
 import pl.edu.pw.restapi.dto.CreateCourseSectionDTO;
+import pl.edu.pw.restapi.dto.UpdateCourseSectionDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseSectionMapper;
 import pl.edu.pw.restapi.repository.CourseRepository;
 import pl.edu.pw.restapi.repository.CourseSectionRepository;
@@ -25,6 +26,14 @@ public class CourseSectionServiceImpl implements CourseSectionService {
     }
 
     @Override
+    public CourseSectionDTO getCourseSection(Long courseId, Long sectionId) {
+        CourseSection section = courseSectionRepository.findByCourseIdAndSectionId(courseId, sectionId)
+                .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
+
+        return CourseSectionMapper.map(section);
+    }
+
+    @Override
     public CourseSectionDTO createCourseSection(Long courseId, CreateCourseSectionDTO section) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new EntityNotFoundException("Course id=" + courseId + " does not exist"));
@@ -36,11 +45,21 @@ public class CourseSectionServiceImpl implements CourseSectionService {
     }
 
     @Override
-    public CourseSectionDTO getCourseSection(Long courseId, Long sectionId) {
-        CourseSection section = courseSectionRepository.findByCourseIdAndSectionId(courseId, sectionId)
+    public CourseSectionDTO updateCourseSection(Long courseId, Long sectionId, UpdateCourseSectionDTO section) {
+        CourseSection sectionToUpdate = courseSectionRepository.findByCourseIdAndSectionId(courseId, sectionId)
                 .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
 
-        return CourseSectionMapper.map(section);
+        updateCourseSectionInDB(courseId, sectionToUpdate, section);
+
+        return CourseSectionMapper.map(sectionToUpdate);
+    }
+
+    private void updateCourseSectionInDB(Long courseId, CourseSection sectionToUpdate, UpdateCourseSectionDTO section) {
+        checkIfCourseContainsSectionWithSameName(courseId, section.getName());
+
+        sectionToUpdate.setName(section.getName());
+
+        courseSectionRepository.save(sectionToUpdate);
     }
 
     @Transactional

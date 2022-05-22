@@ -11,7 +11,7 @@ import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 import pl.edu.pw.restapi.dto.CreateCourseDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseMapper;
-import pl.edu.pw.restapi.dto.updater.CourseUpdater;
+import pl.edu.pw.restapi.service.updater.CourseUpdater;
 import pl.edu.pw.restapi.repository.CourseCategoryRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
