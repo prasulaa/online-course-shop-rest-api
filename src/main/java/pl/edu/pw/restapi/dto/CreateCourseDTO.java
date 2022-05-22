@@ -28,7 +28,7 @@ public class CreateCourseDTO {
     @NotNull(message = "Difficulty cannot be empty")
     private CourseDifficulty difficulty;
     @NotEmpty(message = "Scopes cannot be empty")
-    private List<String> scopes;
+    private List<@NotEmpty(message = "Scope cannot be empty") String> scopes;
     @NotEmpty(message = "Description cannot be empty")
     private String description;
 

@@ -87,4 +87,17 @@ public class CourseController {
         }
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deleteCourse(@PathVariable("id") Long id) {
+        //TODO check if forbidden
+        try {
+            courseService.deleteCourse(id);
+            return ResponseEntity.noContent().build();
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

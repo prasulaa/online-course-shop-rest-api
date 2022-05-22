@@ -65,6 +65,15 @@ public class CourseServiceImpl implements CourseService {
         return CourseMapper.mapDetails(courseToUpdate);
     }
 
+    @Override
+    public void deleteCourse(Long id) {
+        //TODO check if forbidden
+        Course courseToDelete = courseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Course id=" + id + " does not exist"));
+
+        courseRepository.delete(courseToDelete);
+    }
+
     private void updateCourse(UpdateCourseDTO course, Course courseToUpdate) {
         List<CourseCategory> categories = getCourseCategories(course.getCategories());
         CourseUpdater courseUpdater = new CourseUpdater();

@@ -19,4 +19,6 @@ public interface CourseService {
 
     CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id);
 
+    void deleteCourse(Long id);
+
 }
