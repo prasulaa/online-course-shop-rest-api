@@ -12,4 +12,5 @@ public interface CourseSectionService {
 
     CourseSectionDTO updateCourseSection(Long courseId, Long sectionId, UpdateCourseSectionDTO section);
 
+    void deleteCourseSection(Long courseId, Long sectionId);
 }

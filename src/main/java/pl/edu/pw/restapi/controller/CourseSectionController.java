@@ -26,6 +26,7 @@ public class CourseSectionController {
     @GetMapping("{sectionId}")
     public ResponseEntity<?> getCourseSection(@PathVariable("courseId") Long courseId,
                                               @PathVariable("sectionId") Long sectionId) {
+        //TODO check if forbidden
         try {
             CourseSectionDTO section = courseSectionService.getCourseSection(courseId, sectionId);
             return ResponseEntity.ok(section);
@@ -39,6 +40,7 @@ public class CourseSectionController {
     @PostMapping
     public ResponseEntity<?> createCourseSection(@PathVariable("courseId") Long courseId,
                                                  @RequestBody @Valid CreateCourseSectionDTO section) {
+        //TODO check if forbidden
         try {
             CourseSectionDTO createdSection = courseSectionService.createCourseSection(courseId, section);
             return new ResponseEntity<>(createdSection, HttpStatus.CREATED);
@@ -55,11 +57,26 @@ public class CourseSectionController {
     public ResponseEntity<?> updateCourseSection(@PathVariable("courseId") Long courseId,
                                                  @PathVariable("sectionId") Long sectionId,
                                                  @RequestBody @Valid UpdateCourseSectionDTO section) {
+        //TODO check if forbidden
         try {
             CourseSectionDTO updatedSection = courseSectionService.updateCourseSection(courseId, sectionId, section);
             return ResponseEntity.ok(updatedSection);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("{sectionId}")
+    public ResponseEntity<?> deleteCourseSection(@PathVariable("courseId") Long courseId,
+                                                 @PathVariable("sectionId") Long sectionId) {
+        //TODO check if forbidden
+        try {
+            courseSectionService.deleteCourseSection(courseId, sectionId);
+            return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } catch (Exception e) {

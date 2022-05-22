@@ -54,6 +54,24 @@ public class CourseSectionServiceImpl implements CourseSectionService {
         return CourseSectionMapper.map(sectionToUpdate);
     }
 
+    @Override
+    public void deleteCourseSection(Long courseId, Long sectionId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
+
+        deleteSectionFromCourseInDB(course, sectionId);
+    }
+
+    @Transactional
+    private void deleteSectionFromCourseInDB(Course course, Long sectionId) {
+        if (course.getSections().removeIf(s -> s.getId().equals(sectionId))) {
+            courseRepository.save(course);
+            courseSectionRepository.deleteById(sectionId);
+        } else {
+            throw new EntityNotFoundException("Course section not found");
+        }
+    }
+
     private void updateCourseSectionInDB(Long courseId, CourseSection sectionToUpdate, UpdateCourseSectionDTO section) {
         checkIfCourseContainsSectionWithSameName(courseId, section.getName());
 
