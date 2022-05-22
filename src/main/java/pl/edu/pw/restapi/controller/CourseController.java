@@ -42,7 +42,6 @@ public class CourseController {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -63,7 +62,6 @@ public class CourseController {
     @PostMapping
     public ResponseEntity<?> createCourse(@RequestBody @Valid CreateCourseDTO course) {
         //TODO check if forbidden
-        // check if each scope is empty
         try {
             CourseDetailsDTO returnDetails = courseService.createCourse(course);
             return new ResponseEntity<>(returnDetails, HttpStatus.CREATED);
@@ -75,9 +73,8 @@ public class CourseController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateCourse(@RequestBody UpdateCourseDTO course, @PathVariable("id") Long id) {
+    public ResponseEntity<?> updateCourse(@RequestBody @Valid UpdateCourseDTO course, @PathVariable("id") Long id) {
         //TODO check if forbidden
-        // check if each scope is empty
         try {
             CourseDetailsDTO returnDetails = courseService.updateCourse(course, id);
             return ResponseEntity.ok(returnDetails);

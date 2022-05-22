@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.edu.pw.restapi.domain.CourseDifficulty;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Getter
@@ -19,7 +20,7 @@ public class UpdateCourseDTO {
     private Double price;
     private List<Long> categories;
     private CourseDifficulty difficulty;
-    private List<String> scopes;
+    private List<@NotEmpty(message = "Scope cannot be empty") String> scopes;
     private String description;
 
 }
