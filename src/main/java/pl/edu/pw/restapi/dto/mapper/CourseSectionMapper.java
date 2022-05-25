@@ -27,7 +27,7 @@ public class CourseSectionMapper {
             return CourseSectionDTO.builder()
                     .id(section.getId())
                     .name(section.getName())
-                    .lessons(CourseLessonMapper.map(section.getLessons()))
+                    .lessons(CourseLessonMapper.mapToCourseSectionLessonDTO(section.getLessons()))
                     .build();
         }
     }
