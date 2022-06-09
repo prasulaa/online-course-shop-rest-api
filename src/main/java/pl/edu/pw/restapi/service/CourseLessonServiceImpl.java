@@ -59,6 +59,23 @@ public class CourseLessonServiceImpl implements CourseLessonService {
         return CourseLessonMapper.map(lesson);
     }
 
+    @Override
+    public void deleteLesson(Long courseId, Long sectionId, Long lessonId) {
+        CourseSection section = courseSectionRepository.findByCourseIdAndSectionId(courseId, sectionId)
+                .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
+
+        deleteLessonFromSectionInDb(section, lessonId);
+    }
+
+    private void deleteLessonFromSectionInDb(CourseSection section, Long lessonId) {
+        if (section.getLessons().removeIf(l -> l.getId().equals(lessonId))) {
+            courseSectionRepository.save(section);
+            courseLessonRepository.deleteById(lessonId);
+        } else {
+            throw new EntityNotFoundException("Course lesson not found");
+        }
+    }
+
     private void updateCourseLessonInDb(Long courseId, Long sectionId,
                                         CourseLesson lessonToUpdate, UpdateCourseLessonDTO lesson) {
         checkIfSectionContainsLessonWithSameName(courseId, sectionId, lesson.getName());

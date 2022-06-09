@@ -12,4 +12,5 @@ public interface CourseLessonService {
 
     CourseLessonDTO updateLesson(Long courseId, Long sectionId, Long lessonId, UpdateCourseLessonDTO lessonDTO);
 
+    void deleteLesson(Long courseId, Long sectionId, Long lessonId);
 }
