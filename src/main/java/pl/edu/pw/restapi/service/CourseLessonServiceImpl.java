@@ -5,9 +5,11 @@ import pl.edu.pw.restapi.domain.CourseLesson;
 import pl.edu.pw.restapi.domain.CourseSection;
 import pl.edu.pw.restapi.dto.CourseLessonDTO;
 import pl.edu.pw.restapi.dto.CreateCourseLessonDTO;
+import pl.edu.pw.restapi.dto.UpdateCourseLessonDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseLessonMapper;
 import pl.edu.pw.restapi.repository.CourseLessonRepository;
 import pl.edu.pw.restapi.repository.CourseSectionRepository;
+import pl.edu.pw.restapi.service.updater.CourseLessonUpdater;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -27,7 +29,7 @@ public class CourseLessonServiceImpl implements CourseLessonService {
     @Override
     public CourseLessonDTO getLesson(Long courseId, Long sectionId, Long lessonId) {
         CourseLesson lesson = courseLessonRepository
-                .getCourseLessonByCourseIdAndSectionIdAndLessonId(courseId, sectionId, lessonId)
+                .findCourseLessonByCourseIdAndSectionIdAndLessonId(courseId, sectionId, lessonId)
                 .orElseThrow(() -> new EntityNotFoundException("Lesson not found"));
 
         return CourseLessonMapper.map(lesson);
@@ -46,14 +48,36 @@ public class CourseLessonServiceImpl implements CourseLessonService {
         return CourseLessonMapper.map(createdLesson);
     }
 
-    private void checkIfSectionContainsLessonWithSameName(Long courseId, Long sectionId, String name) {
-        Optional<CourseLesson> lessonOpt = courseLessonRepository.getCourseLessonByCourseIdAndSectionIdAndName(
-                courseId,
-                sectionId,
-                name);
+    @Override
+    public CourseLessonDTO updateLesson(Long courseId, Long sectionId, Long lessonId, UpdateCourseLessonDTO lessonDTO) {
+        CourseLesson lesson = courseLessonRepository
+                .findCourseLessonByCourseIdAndSectionIdAndLessonId(courseId, sectionId, lessonId)
+                .orElseThrow(() -> new EntityNotFoundException("Course lesson not found"));
 
-        if (lessonOpt.isPresent()) {
-            throw new IllegalArgumentException("Lesson " + name + " already exists");
+        updateCourseLessonInDb(courseId, sectionId, lesson, lessonDTO);
+
+        return CourseLessonMapper.map(lesson);
+    }
+
+    private void updateCourseLessonInDb(Long courseId, Long sectionId,
+                                        CourseLesson lessonToUpdate, UpdateCourseLessonDTO lesson) {
+        checkIfSectionContainsLessonWithSameName(courseId, sectionId, lesson.getName());
+
+        new CourseLessonUpdater().update(lessonToUpdate, lesson);
+
+        courseLessonRepository.save(lessonToUpdate);
+    }
+
+    private void checkIfSectionContainsLessonWithSameName(Long courseId, Long sectionId, String name) {
+        if (name != null && !name.isEmpty()) {
+            Optional<CourseLesson> lessonOpt = courseLessonRepository.findCourseLessonByCourseIdAndSectionIdAndName(
+                    courseId,
+                    sectionId,
+                    name);
+
+            if (lessonOpt.isPresent()) {
+                throw new IllegalArgumentException("Lesson " + name + " already exists");
+            }
         }
     }
 

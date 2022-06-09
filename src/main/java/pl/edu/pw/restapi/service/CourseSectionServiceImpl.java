@@ -91,10 +91,12 @@ public class CourseSectionServiceImpl implements CourseSectionService {
     }
 
     private void checkIfCourseContainsSectionWithSameName(Long courseId, String sectionName) {
-        Optional<CourseSection> courseSectionOpt = courseSectionRepository.findByCourseIdAndName(courseId, sectionName);
+        if (sectionName != null && !sectionName.isEmpty()) {
+            Optional<CourseSection> courseSectionOpt = courseSectionRepository.findByCourseIdAndName(courseId, sectionName);
 
-        if (courseSectionOpt.isPresent()) {
-            throw new IllegalArgumentException("Section " + sectionName + " already exists");
+            if (courseSectionOpt.isPresent()) {
+                throw new IllegalArgumentException("Section " + sectionName + " already exists");
+            }
         }
     }
 }

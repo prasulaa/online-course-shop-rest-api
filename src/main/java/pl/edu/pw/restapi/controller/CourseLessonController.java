@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseLessonDTO;
 import pl.edu.pw.restapi.dto.CreateCourseDTO;
 import pl.edu.pw.restapi.dto.CreateCourseLessonDTO;
+import pl.edu.pw.restapi.dto.UpdateCourseLessonDTO;
 import pl.edu.pw.restapi.service.CourseLessonService;
 
 import javax.persistence.EntityNotFoundException;
@@ -45,6 +46,24 @@ public class CourseLessonController {
         try {
             CourseLessonDTO createdLesson = courseLessonService.createLesson(courseId, sectionId, lesson);
             return new ResponseEntity<>(createdLesson, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("{lessonId}")
+    public ResponseEntity<?> updateLesson(@PathVariable("courseId") Long courseId,
+                                          @PathVariable("sectionId") Long sectionId,
+                                          @PathVariable("lessonId") Long lessonId,
+                                          @RequestBody @Valid UpdateCourseLessonDTO lesson) {
+        //TODO check if forbidden
+        try {
+            CourseLessonDTO updatedLesson = courseLessonService.updateLesson(courseId, sectionId, lessonId, lesson);
+            return ResponseEntity.ok(updatedLesson);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         } catch (EntityNotFoundException e) {

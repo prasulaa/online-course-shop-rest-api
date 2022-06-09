@@ -20,9 +20,9 @@ public interface CourseLessonRepository extends JpaRepository<CourseLesson, Long
                         "csl.course_section_id = css.sections_id and " +
                         "css.sections_id = :sectionId and " +
                         "css.course_id = :courseId")
-    Optional<CourseLesson> getCourseLessonByCourseIdAndSectionIdAndLessonId(@Param("courseId") Long courseId,
-                                                                            @Param("sectionId") Long sectionId,
-                                                                            @Param("lessonId") Long lessonId);
+    Optional<CourseLesson> findCourseLessonByCourseIdAndSectionIdAndLessonId(@Param("courseId") Long courseId,
+                                                                             @Param("sectionId") Long sectionId,
+                                                                             @Param("lessonId") Long lessonId);
 
     @Query(nativeQuery = true, value =
             "select * from course_lesson cl " +
@@ -33,8 +33,8 @@ public interface CourseLessonRepository extends JpaRepository<CourseLesson, Long
                     "csl.course_section_id = css.sections_id and " +
                     "css.sections_id = :sectionId and " +
                     "css.course_id = :courseId")
-    Optional<CourseLesson> getCourseLessonByCourseIdAndSectionIdAndName(@Param("courseId") Long courseId,
-                                                                        @Param("sectionId") Long sectionId,
-                                                                        @Param("name") String name);
+    Optional<CourseLesson> findCourseLessonByCourseIdAndSectionIdAndName(@Param("courseId") Long courseId,
+                                                                         @Param("sectionId") Long sectionId,
+                                                                         @Param("name") String name);
 
 }
