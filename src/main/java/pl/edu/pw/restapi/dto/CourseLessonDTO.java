@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class CourseLessonDTO {
 
+    private Long id;
     private String name;
     private String data;
 

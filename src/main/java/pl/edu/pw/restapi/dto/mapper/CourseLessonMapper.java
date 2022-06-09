@@ -3,6 +3,7 @@ package pl.edu.pw.restapi.dto.mapper;
 import pl.edu.pw.restapi.domain.CourseLesson;
 import pl.edu.pw.restapi.dto.CourseLessonDTO;
 import pl.edu.pw.restapi.dto.CourseSectionLessonDTO;
+import pl.edu.pw.restapi.dto.CreateCourseLessonDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +15,18 @@ public class CourseLessonMapper {
             return null;
         } else {
             return CourseLessonDTO.builder()
+                    .id(lesson.getId())
+                    .name(lesson.getName())
+                    .data(lesson.getData())
+                    .build();
+        }
+    }
+
+    public static CourseLesson map(CreateCourseLessonDTO lesson) {
+        if (lesson == null) {
+            return null;
+        } else {
+            return CourseLesson.builder()
                     .name(lesson.getName())
                     .data(lesson.getData())
                     .build();
