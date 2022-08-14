@@ -1,6 +1,8 @@
 package pl.edu.pw.restapi.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.*;
 
@@ -8,15 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DbInit implements CommandLineRunner {
 
     private final CourseCategoryRepository courseCategoryRepository;
     private final CourseRepository courseRepository;
-
-    public DbInit(CourseCategoryRepository courseCategoryRepository, CourseRepository courseRepository) {
-        this.courseCategoryRepository = courseCategoryRepository;
-        this.courseRepository = courseRepository;
-    }
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -113,6 +113,11 @@ public class DbInit implements CommandLineRunner {
                 "base64 thumbnail");
 
         courseRepository.save(guitarCourse);
+
+        User user = new User();
+        user.setUsername("test");
+        user.setPassword(passwordEncoder.encode("test"));
+        userRepository.save(user);
     }
 
 }

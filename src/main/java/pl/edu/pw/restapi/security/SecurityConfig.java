@@ -12,9 +12,11 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import pl.edu.pw.restapi.service.UserService;
 
 import javax.sql.DataSource;
 
@@ -26,25 +28,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final RestAuthenticationFailureHandler failureHandler;
     private final DataSource dataSource;
     private final String secret;
+    private final UserService userService;
 
     public SecurityConfig(ObjectMapper objectMapper, RestAuthenticationSuccessHandler successHandler,
                           RestAuthenticationFailureHandler failureHandler, DataSource dataSource,
-                          @Value("${jwt.secret}") String secret) {
+                          @Value("${jwt.secret}") String secret, UserService userService) {
         this.objectMapper = objectMapper;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
         this.dataSource = dataSource;
         this.secret = secret;
+        this.userService = userService;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .withDefaultSchema()
-                .dataSource(dataSource)
-                .withUser("test")
-                .password("{bcrypt}" + new BCryptPasswordEncoder().encode("test"))
-                .roles("USER");
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -64,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(authenticationFilter())
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userDetailsManager(), secret))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userService, secret))
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and()
@@ -80,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserDetailsManager userDetailsManager() {
-        return new JdbcUserDetailsManager(dataSource);
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
