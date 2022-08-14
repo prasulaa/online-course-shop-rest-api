@@ -1,9 +1,9 @@
-package pl.edu.pw.restapi.security;
+package pl.edu.pw.restapi.dto;
 
 import lombok.Getter;
 
 @Getter
-public class LoginCredentials {
+public class LoginCredentialsDTO {
 
     private String username;
     private String password;

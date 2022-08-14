@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import pl.edu.pw.restapi.dto.LoginCredentialsDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,14 +27,25 @@ public class JsonObjectAuthenticationFilter extends UsernamePasswordAuthenticati
             while ((line = reader.readLine()) != null) {
                 sb.append(line);
             }
-            LoginCredentials authRequest = objectMapper.readValue(sb.toString(), LoginCredentials.class);
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    authRequest.getUsername(), authRequest.getPassword()
-            );
+
+            LoginCredentialsDTO authRequest = objectMapper.readValue(sb.toString(), LoginCredentialsDTO.class);
+            UsernamePasswordAuthenticationToken token = createToken(authRequest);
+
             setDetails(request, token);
             return this.getAuthenticationManager().authenticate(token);
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    private UsernamePasswordAuthenticationToken createToken(LoginCredentialsDTO authRequest) {
+        String username = authRequest.getUsername();
+        String password = authRequest.getPassword();
+
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            throw new IllegalArgumentException("Username and password cannot be empty");
+        } else {
+            return new UsernamePasswordAuthenticationToken(username, password);
         }
     }
 
