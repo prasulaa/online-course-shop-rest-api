@@ -4,10 +4,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 import pl.edu.pw.restapi.domain.Course;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
@@ -28,5 +30,27 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                          @Param("priceMin") Double priceMin,
                          @Param("priceMax") Double priceMax,
                          Pageable pageable);
+
+    @Query(nativeQuery = true, value =
+            "select * from course c " +
+                    "inner join (" +
+                        "select ubc.user_id as uid, ubc.bought_courses_id as cid from user_bought_courses ubc " +
+                        "union " +
+                        "select urc.user_id as uid, urc.released_courses_id as cid from user_released_courses urc" +
+                    ") uc on " +
+                        "uc.cid = c.id and " +
+                        "c.id = :courseId and " +
+                        "uc.uid = :userId")
+    Optional<Course> findByCourseIdAndUserId(@Param("courseId") Long courseId,
+                                             @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value =
+            "select * from course c " +
+                    "join user_released_courses urc on " +
+                    "urc.released_courses_id = c.id and " +
+                    "c.id = :courseId and " +
+                    "urc.user_id= :userId")
+    Optional<Course> findReleasedCoursesByCourseIdAndUserId(@Param("courseId") Long courseId,
+                                                            @Param("userId") Long userId);
 
 }

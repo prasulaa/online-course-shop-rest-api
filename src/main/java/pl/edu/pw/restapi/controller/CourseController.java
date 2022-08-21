@@ -3,6 +3,8 @@ package pl.edu.pw.restapi.controller;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseDTO;
@@ -13,6 +15,7 @@ import pl.edu.pw.restapi.service.CourseService;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -47,10 +50,10 @@ public class CourseController {
     }
 
     @GetMapping("{id}/details")
-    public ResponseEntity<?> getCourseDetails(@PathVariable("id") Long id) {
-        //TODO check if forbidden
+    public ResponseEntity<?> getCourseDetails(@PathVariable("id") Long id,
+                                              @AuthenticationPrincipal String username) {
         try {
-            CourseDetailsDTO course = courseService.getCourseDetails(id);
+            CourseDetailsDTO course = courseService.getCourseDetails(id, username);
             return ResponseEntity.ok(course);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -61,7 +64,6 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<?> createCourse(@RequestBody @Valid CreateCourseDTO course) {
-        //TODO check if forbidden
         try {
             CourseDetailsDTO returnDetails = courseService.createCourse(course);
             return new ResponseEntity<>(returnDetails, HttpStatus.CREATED);
@@ -73,10 +75,11 @@ public class CourseController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateCourse(@RequestBody @Valid UpdateCourseDTO course, @PathVariable("id") Long id) {
-        //TODO check if forbidden
+    public ResponseEntity<?> updateCourse(@RequestBody @Valid UpdateCourseDTO course,
+                                          @PathVariable("id") Long id,
+                                          @AuthenticationPrincipal String username) {
         try {
-            CourseDetailsDTO returnDetails = courseService.updateCourse(course, id);
+            CourseDetailsDTO returnDetails = courseService.updateCourse(course, id, username);
             return ResponseEntity.ok(returnDetails);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -88,10 +91,10 @@ public class CourseController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteCourse(@PathVariable("id") Long id) {
-        //TODO check if forbidden
+    public ResponseEntity<?> deleteCourse(@PathVariable("id") Long id,
+                                          @AuthenticationPrincipal String username) {
         try {
-            courseService.deleteCourse(id);
+            courseService.deleteCourse(id, username);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

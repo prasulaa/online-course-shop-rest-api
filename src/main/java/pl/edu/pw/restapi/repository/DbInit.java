@@ -115,8 +115,10 @@ public class DbInit implements CommandLineRunner {
         courseRepository.save(guitarCourse);
 
         User user = new User();
-        user.setUsername("test");
-        user.setPassword(passwordEncoder.encode("test"));
+        user.setUsername("string");
+        user.setPassword(passwordEncoder.encode("string"));
+        user.setBoughtCourses(List.of(javaCourse));
+        user.setReleasedCourses(List.of(guitarCourse));
         userRepository.save(user);
     }
 

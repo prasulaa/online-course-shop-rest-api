@@ -24,7 +24,6 @@ public class Config {
     @Bean
     public Docket swaggerApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .ignoredParameterTypes(UsernamePasswordAuthenticationToken.class)
                 .select()
                 .paths(PathSelectors.regex("^(?!/(error).*$).*$"))
                 .build()

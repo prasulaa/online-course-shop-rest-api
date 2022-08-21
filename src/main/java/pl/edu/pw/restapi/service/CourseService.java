@@ -13,12 +13,12 @@ public interface CourseService {
     List<CourseDTO> getCourses(String title, List<Long> categories, List<Long> difficulties, Double priceMin,
                                Double priceMax, Integer pageNumber, Integer pageSize, Sort.Direction sort);
 
-    CourseDetailsDTO getCourseDetails(Long id);
+    CourseDetailsDTO getCourseDetails(Long id, String username);
 
     CourseDetailsDTO createCourse(CreateCourseDTO course);
 
-    CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id);
+    CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id, String username);
 
-    void deleteCourse(Long id);
+    void deleteCourse(Long id, String username);
 
 }

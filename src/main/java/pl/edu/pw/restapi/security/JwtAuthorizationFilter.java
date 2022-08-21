@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -43,16 +44,20 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
-        String token = request.getHeader(TOKEN_HEADER);
-        if (token != null && token.startsWith(TOKEN_PREFIX)) {
-            String userName = JWT.require(Algorithm.HMAC256(secret))
-                    .build()
-                    .verify(token.replace(TOKEN_PREFIX, ""))
-                    .getSubject();
-            if (userName != null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-                return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+        try {
+            String token = request.getHeader(TOKEN_HEADER);
+            if (token != null && token.startsWith(TOKEN_PREFIX)) {
+                String userName = JWT.require(Algorithm.HMAC256(secret))
+                        .build()
+                        .verify(token.replace(TOKEN_PREFIX, ""))
+                        .getSubject();
+
+                if (userName != null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+                    return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), null, userDetails.getAuthorities());
+                }
             }
+        } catch (Exception ignored) {
         }
         return null;
     }

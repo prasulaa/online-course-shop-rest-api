@@ -1,34 +1,38 @@
 package pl.edu.pw.restapi.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseCategory;
+import pl.edu.pw.restapi.domain.User;
 import pl.edu.pw.restapi.dto.CourseDTO;
 import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 import pl.edu.pw.restapi.dto.CreateCourseDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseMapper;
+import pl.edu.pw.restapi.repository.UserRepository;
 import pl.edu.pw.restapi.service.updater.CourseUpdater;
 import pl.edu.pw.restapi.repository.CourseCategoryRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final CourseCategoryRepository courseCategoryRepository;
-
-    public CourseServiceImpl(CourseRepository courseRepository, CourseCategoryRepository courseCategoryRepository) {
-        this.courseRepository = courseRepository;
-        this.courseCategoryRepository = courseCategoryRepository;
-    }
+    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public List<CourseDTO> getCourses(String title, List<Long> categories, List<Long> difficulties, Double priceMin,
@@ -39,8 +43,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDetailsDTO getCourseDetails(Long id) {
-        Course course = courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id + " not found"));
+    public CourseDetailsDTO getCourseDetails(Long id, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        Course course = courseRepository.findByCourseIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Course " + id + " not found"));
         return CourseMapper.mapDetails(course);
     }
 
@@ -55,9 +62,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id) {
-        Course courseToUpdate = courseRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Course id=" + id + " does not exist"));
+    public CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        Course courseToUpdate = courseRepository.findReleasedCoursesByCourseIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Course " + id + " not found"));
 
         updateCourse(course, courseToUpdate);
         courseRepository.save(courseToUpdate);
@@ -66,11 +75,15 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void deleteCourse(Long id) {
-        //TODO check if forbidden
-        Course courseToDelete = courseRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Course id=" + id + " does not exist"));
+    @Transactional
+    public void deleteCourse(Long id, String username) {
+        User user = (User) userService.loadUserByUsername(username);
 
+        Course courseToDelete = courseRepository.findReleasedCoursesByCourseIdAndUserId(id, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Course " + id + " not found"));
+
+        user.getReleasedCourses().remove(courseToDelete);
+        userRepository.save(user);
         courseRepository.delete(courseToDelete);
     }
 
@@ -86,7 +99,7 @@ public class CourseServiceImpl implements CourseService {
         } else {
             return ids.stream()
                     .map(id -> courseCategoryRepository.findById(id)
-                            .orElseThrow(() -> new IllegalArgumentException("Category id=" + id + " does not exist")))
+                            .orElseThrow(() -> new IllegalArgumentException("Category " + id + " not found")))
                     .collect(Collectors.toList());
         }
     }
