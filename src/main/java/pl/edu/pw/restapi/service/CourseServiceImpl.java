@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseCategory;
@@ -65,7 +63,7 @@ public class CourseServiceImpl implements CourseService {
     public CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id, String username) {
         User user = (User) userService.loadUserByUsername(username);
 
-        Course courseToUpdate = courseRepository.findReleasedCoursesByCourseIdAndUserId(id, user.getId())
+        Course courseToUpdate = courseRepository.findReleasedCourseByCourseIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course " + id + " not found"));
 
         updateCourse(course, courseToUpdate);
@@ -79,7 +77,7 @@ public class CourseServiceImpl implements CourseService {
     public void deleteCourse(Long id, String username) {
         User user = (User) userService.loadUserByUsername(username);
 
-        Course courseToDelete = courseRepository.findReleasedCoursesByCourseIdAndUserId(id, user.getId())
+        Course courseToDelete = courseRepository.findReleasedCourseByCourseIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course " + id + " not found"));
 
         user.getReleasedCourses().remove(courseToDelete);

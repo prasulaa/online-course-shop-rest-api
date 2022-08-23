@@ -1,8 +1,10 @@
 package pl.edu.pw.restapi.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseSection;
+import pl.edu.pw.restapi.domain.User;
 import pl.edu.pw.restapi.dto.CourseSectionDTO;
 import pl.edu.pw.restapi.dto.CreateCourseSectionDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseSectionDTO;
@@ -15,28 +17,30 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CourseSectionServiceImpl implements CourseSectionService {
 
     private final CourseRepository courseRepository;
     private final CourseSectionRepository courseSectionRepository;
-
-    public CourseSectionServiceImpl(CourseRepository courseRepository, CourseSectionRepository courseSectionRepository) {
-        this.courseRepository = courseRepository;
-        this.courseSectionRepository = courseSectionRepository;
-    }
+    private final UserService userService;
 
     @Override
-    public CourseSectionDTO getCourseSection(Long courseId, Long sectionId) {
-        CourseSection section = courseSectionRepository.findByCourseIdAndSectionId(courseId, sectionId)
+    public CourseSectionDTO getCourseSection(Long courseId, Long sectionId, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        CourseSection section = courseSectionRepository
+                .findByCourseIdAndSectionIdAndUserId(courseId, sectionId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
 
         return CourseSectionMapper.map(section);
     }
 
     @Override
-    public CourseSectionDTO createCourseSection(Long courseId, CreateCourseSectionDTO section) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new EntityNotFoundException("Course id=" + courseId + " does not exist"));
+    public CourseSectionDTO createCourseSection(Long courseId, CreateCourseSectionDTO section, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        Course course = courseRepository.findReleasedCourseByCourseIdAndUserId(courseId, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
         CourseSection createdSection = CourseSectionMapper.map(section);
         addCourseSectionToDB(course, createdSection);
@@ -45,8 +49,12 @@ public class CourseSectionServiceImpl implements CourseSectionService {
     }
 
     @Override
-    public CourseSectionDTO updateCourseSection(Long courseId, Long sectionId, UpdateCourseSectionDTO section) {
-        CourseSection sectionToUpdate = courseSectionRepository.findByCourseIdAndSectionId(courseId, sectionId)
+    public CourseSectionDTO updateCourseSection(Long courseId, Long sectionId,
+                                                UpdateCourseSectionDTO section, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        CourseSection sectionToUpdate = courseSectionRepository
+                .findReleasedCourseSectionByCourseIdAndSectionIdAndUserId(courseId, sectionId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
 
         updateCourseSectionInDB(courseId, sectionToUpdate, section);
@@ -55,9 +63,11 @@ public class CourseSectionServiceImpl implements CourseSectionService {
     }
 
     @Override
-    public void deleteCourseSection(Long courseId, Long sectionId) {
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
+    public void deleteCourseSection(Long courseId, Long sectionId, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        Course course = courseRepository.findReleasedCourseByCourseIdAndUserId(courseId, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
         deleteSectionFromCourseInDB(course, sectionId);
     }

@@ -32,7 +32,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                          Pageable pageable);
 
     @Query(nativeQuery = true, value =
-            "select * from course c " +
+            "select c.* from course c " +
                     "inner join (" +
                         "select ubc.user_id as uid, ubc.bought_courses_id as cid from user_bought_courses ubc " +
                         "union " +
@@ -45,12 +45,11 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                                              @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value =
-            "select * from course c " +
+            "select c.* from course c " +
                     "join user_released_courses urc on " +
                     "urc.released_courses_id = c.id and " +
                     "c.id = :courseId and " +
                     "urc.user_id= :userId")
-    Optional<Course> findReleasedCoursesByCourseIdAndUserId(@Param("courseId") Long courseId,
-                                                            @Param("userId") Long userId);
-
+    Optional<Course> findReleasedCourseByCourseIdAndUserId(@Param("courseId") Long courseId,
+                                                           @Param("userId") Long userId);
 }
