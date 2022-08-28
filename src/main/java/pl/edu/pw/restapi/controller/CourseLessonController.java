@@ -2,6 +2,7 @@ package pl.edu.pw.restapi.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseLessonDTO;
@@ -26,10 +27,10 @@ public class CourseLessonController {
     @GetMapping("{lessonId}")
     public ResponseEntity<?> getLesson(@PathVariable("courseId") Long courseId,
                                        @PathVariable("sectionId") Long sectionId,
-                                       @PathVariable("lessonId") Long lessonId) {
-        //TODO check if forbidden
+                                       @PathVariable("lessonId") Long lessonId,
+                                       @AuthenticationPrincipal String username) {
         try {
-            CourseLessonDTO lesson = courseLessonService.getLesson(courseId, sectionId, lessonId);
+            CourseLessonDTO lesson = courseLessonService.getLesson(courseId, sectionId, lessonId, username);
             return ResponseEntity.ok(lesson);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -41,10 +42,10 @@ public class CourseLessonController {
     @PostMapping
     public ResponseEntity<?> createLesson(@PathVariable("courseId") Long courseId,
                                           @PathVariable("sectionId") Long sectionId,
-                                          @RequestBody @Valid CreateCourseLessonDTO lesson) {
-        //TODO check if forbidden
+                                          @RequestBody @Valid CreateCourseLessonDTO lesson,
+                                          @AuthenticationPrincipal String username) {
         try {
-            CourseLessonDTO createdLesson = courseLessonService.createLesson(courseId, sectionId, lesson);
+            CourseLessonDTO createdLesson = courseLessonService.createLesson(courseId, sectionId, lesson, username);
             return new ResponseEntity<>(createdLesson, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -59,10 +60,10 @@ public class CourseLessonController {
     public ResponseEntity<?> updateLesson(@PathVariable("courseId") Long courseId,
                                           @PathVariable("sectionId") Long sectionId,
                                           @PathVariable("lessonId") Long lessonId,
-                                          @RequestBody @Valid UpdateCourseLessonDTO lesson) {
-        //TODO check if forbidden
+                                          @RequestBody @Valid UpdateCourseLessonDTO lesson,
+                                          @AuthenticationPrincipal String username) {
         try {
-            CourseLessonDTO updatedLesson = courseLessonService.updateLesson(courseId, sectionId, lessonId, lesson);
+            CourseLessonDTO updatedLesson = courseLessonService.updateLesson(courseId, sectionId, lessonId, lesson, username);
             return ResponseEntity.ok(updatedLesson);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -76,10 +77,10 @@ public class CourseLessonController {
     @DeleteMapping("{lessonId}")
     public ResponseEntity<?> deleteLesson(@PathVariable("courseId") Long courseId,
                                           @PathVariable("sectionId") Long sectionId,
-                                          @PathVariable("lessonId") Long lessonId) {
-        //TODO check if forbidden
+                                          @PathVariable("lessonId") Long lessonId,
+                                          @AuthenticationPrincipal String username) {
         try {
-            courseLessonService.deleteLesson(courseId, sectionId, lessonId);
+            courseLessonService.deleteLesson(courseId, sectionId, lessonId, username);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

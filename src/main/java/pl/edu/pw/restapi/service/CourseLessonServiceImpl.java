@@ -1,14 +1,17 @@
 package pl.edu.pw.restapi.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.CourseLesson;
 import pl.edu.pw.restapi.domain.CourseSection;
+import pl.edu.pw.restapi.domain.User;
 import pl.edu.pw.restapi.dto.CourseLessonDTO;
 import pl.edu.pw.restapi.dto.CreateCourseLessonDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseLessonDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseLessonMapper;
 import pl.edu.pw.restapi.repository.CourseLessonRepository;
 import pl.edu.pw.restapi.repository.CourseSectionRepository;
+import pl.edu.pw.restapi.repository.UserRepository;
 import pl.edu.pw.restapi.service.updater.CourseLessonUpdater;
 
 import javax.persistence.EntityNotFoundException;
@@ -16,30 +19,33 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class CourseLessonServiceImpl implements CourseLessonService {
 
     private final CourseLessonRepository courseLessonRepository;
     private final CourseSectionRepository courseSectionRepository;
+    private final UserService userService;
 
-    public CourseLessonServiceImpl(CourseLessonRepository courseLessonRepository, CourseSectionRepository courseSectionRepository) {
-        this.courseLessonRepository = courseLessonRepository;
-        this.courseSectionRepository = courseSectionRepository;
-    }
 
     @Override
-    public CourseLessonDTO getLesson(Long courseId, Long sectionId, Long lessonId) {
+    public CourseLessonDTO getLesson(Long courseId, Long sectionId, Long lessonId, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
         CourseLesson lesson = courseLessonRepository
-                .findCourseLessonByCourseIdAndSectionIdAndLessonId(courseId, sectionId, lessonId)
+                .findCourseLessonByCourseIdAndSectionIdAndLessonIdAndUserId(courseId, sectionId, lessonId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Lesson not found"));
 
         return CourseLessonMapper.map(lesson);
     }
 
     @Override
-    public CourseLessonDTO createLesson(Long courseId, Long sectionId, CreateCourseLessonDTO lesson) {
+    public CourseLessonDTO createLesson(Long courseId, Long sectionId, CreateCourseLessonDTO lesson, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
         CourseLesson createdLesson = CourseLessonMapper.map(lesson);
 
-        CourseSection section = courseSectionRepository.findByCourseIdAndSectionId(courseId, sectionId)
+        CourseSection section = courseSectionRepository
+                .findReleasedCourseSectionByCourseIdAndSectionIdAndUserId(courseId, sectionId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
 
         checkIfSectionContainsLessonWithSameName(courseId, sectionId, lesson.getName());
@@ -49,9 +55,12 @@ public class CourseLessonServiceImpl implements CourseLessonService {
     }
 
     @Override
-    public CourseLessonDTO updateLesson(Long courseId, Long sectionId, Long lessonId, UpdateCourseLessonDTO lessonDTO) {
+    public CourseLessonDTO updateLesson(Long courseId, Long sectionId, Long lessonId,
+                                        UpdateCourseLessonDTO lessonDTO, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
         CourseLesson lesson = courseLessonRepository
-                .findCourseLessonByCourseIdAndSectionIdAndLessonId(courseId, sectionId, lessonId)
+                .findReleasedCourseLessonByCourseIdAndSectionIdAndLessonIdAndUserId(courseId, sectionId, lessonId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course lesson not found"));
 
         updateCourseLessonInDb(courseId, sectionId, lesson, lessonDTO);
@@ -60,8 +69,11 @@ public class CourseLessonServiceImpl implements CourseLessonService {
     }
 
     @Override
-    public void deleteLesson(Long courseId, Long sectionId, Long lessonId) {
-        CourseSection section = courseSectionRepository.findByCourseIdAndSectionId(courseId, sectionId)
+    public void deleteLesson(Long courseId, Long sectionId, Long lessonId, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        CourseSection section = courseSectionRepository
+                .findReleasedCourseSectionByCourseIdAndSectionIdAndUserId(courseId, sectionId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
 
         deleteLessonFromSectionInDb(section, lessonId);
