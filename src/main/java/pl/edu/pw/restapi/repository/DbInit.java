@@ -6,6 +6,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.*;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,7 @@ public class DbInit implements CommandLineRunner {
     private final CourseCategoryRepository courseCategoryRepository;
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final CourseFileRepository courseFileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -120,6 +124,10 @@ public class DbInit implements CommandLineRunner {
         user.setBoughtCourses(List.of(javaCourse));
         user.setReleasedCourses(List.of(guitarCourse));
         userRepository.save(user);
+
+        CourseFile file1 = new CourseFile(null, "file1.jpg", "jpg", Files.readAllBytes(Path.of("C:\\Users\\orgin\\Desktop\\studia\\Projekt dyplomowy\\frog.jpg")), javaCourse);
+        CourseFile file2 = new CourseFile(null, "file2", "png", null, javaCourse);
+        courseFileRepository.saveAll(List.of(file1, file2));
     }
 
 }

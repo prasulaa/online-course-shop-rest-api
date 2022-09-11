@@ -22,7 +22,9 @@ import java.util.List;
 @RequestMapping("/course")
 public class CourseController {
 
-    //TODO logger
+    //TODO logger and
+    // status 500 without msg and
+    // getCourseDetails without authorization
 
     private final CourseService courseService;
 
