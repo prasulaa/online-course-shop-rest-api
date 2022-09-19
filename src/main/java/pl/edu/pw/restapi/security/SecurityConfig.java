@@ -60,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/register").permitAll()
                 .antMatchers(HttpMethod.GET, "/course").permitAll()
                 .antMatchers("/category").permitAll()
+                .antMatchers("/course/*/file/**").permitAll() // TODO delete this
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

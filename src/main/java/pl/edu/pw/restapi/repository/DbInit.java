@@ -125,8 +125,8 @@ public class DbInit implements CommandLineRunner {
         user.setReleasedCourses(List.of(guitarCourse));
         userRepository.save(user);
 
-        CourseFile file1 = new CourseFile(null, "file1.jpg", "jpg", Files.readAllBytes(Path.of("C:\\Users\\orgin\\Desktop\\studia\\Projekt dyplomowy\\frog.jpg")), javaCourse);
-        CourseFile file2 = new CourseFile(null, "file2", "png", null, javaCourse);
+        CourseFile file1 = new CourseFile(null, "file1.jpg", "jpg", Files.readAllBytes(Path.of("src/main/resources/initdata/frog.jpg")), javaCourse);
+        CourseFile file2 = new CourseFile(null, "file2.mp4", "mp4", Files.readAllBytes(Path.of("src/main/resources/initdata/earth.mp4")), javaCourse);
         courseFileRepository.saveAll(List.of(file1, file2));
     }
 

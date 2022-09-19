@@ -4,6 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.edu.pw.restapi.dto.CourseFileDTO;
 import pl.edu.pw.restapi.dto.CourseFileInfoDTO;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface CourseFileService {
@@ -12,7 +13,7 @@ public interface CourseFileService {
 
     CourseFileDTO getCourseFile(Long courseId, Long fileId, String username);
 
-    List<CourseFileInfoDTO> createCourseFile(Long courseId, MultipartFile courseFile, String username);
+    CourseFileInfoDTO createCourseFile(Long courseId, MultipartFile courseFile, String username) throws IOException;
 
     void deleteCourseFile(Long courseId, Long fileId, String username);
 

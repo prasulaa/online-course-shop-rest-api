@@ -13,6 +13,7 @@ import pl.edu.pw.restapi.repository.CourseFileRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -52,8 +53,18 @@ public class CourseFileServiceImpl implements CourseFileService {
     }
 
     @Override
-    public List<CourseFileInfoDTO> createCourseFile(Long courseId, MultipartFile courseFile, String username) {
-        return null;
+    public CourseFileInfoDTO createCourseFile(Long courseId, MultipartFile courseFile, String username) throws IOException {
+        User user = (User) userService.loadUserByUsername(username);
+
+        Course course = courseRepository
+                .findReleasedCourseByCourseIdAndUserId(courseId, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+
+        CourseFile courseFileToSave = CourseFileMapper.map(courseFile, course);
+
+        courseFileRepository.save(courseFileToSave);
+
+        return CourseFileMapper.map(courseFileToSave);
     }
 
     @Override
