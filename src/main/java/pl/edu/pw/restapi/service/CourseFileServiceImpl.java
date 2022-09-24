@@ -13,6 +13,7 @@ import pl.edu.pw.restapi.repository.CourseFileRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 
@@ -68,8 +69,19 @@ public class CourseFileServiceImpl implements CourseFileService {
     }
 
     @Override
+    @Transactional
     public void deleteCourseFile(Long courseId, Long fileId, String username) {
+        User user = (User) userService.loadUserByUsername(username);
 
+        Course course = courseRepository
+                .findReleasedCourseByCourseIdAndUserId(courseId, user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+
+        if (courseFileRepository.existsByIdAndCourseId(fileId, courseId)) {
+            courseFileRepository.deleteByIdAndCourseId(fileId, courseId);
+        } else {
+            throw new EntityNotFoundException("File not found");
+        }
     }
 
 }

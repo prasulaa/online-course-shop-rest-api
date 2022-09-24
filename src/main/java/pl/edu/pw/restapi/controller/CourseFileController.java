@@ -67,4 +67,19 @@ public class CourseFileController {
         }
     }
 
+    @DeleteMapping("{fileId}")
+    public ResponseEntity<?> deleteCourseFile(@PathVariable("courseId") Long courseId,
+                                              @PathVariable("fileId") Long fileId,
+                                              @AuthenticationPrincipal String username) {
+        try {
+            username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
+            courseFileService.deleteCourseFile(courseId, fileId, username);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

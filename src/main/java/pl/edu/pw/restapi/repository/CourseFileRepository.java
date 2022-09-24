@@ -15,4 +15,8 @@ public interface CourseFileRepository extends JpaRepository<CourseFile, Long> {
 
     Optional<CourseFile> findByIdAndCourseId(Long id, Long courseId);
 
+    boolean existsByIdAndCourseId(Long id, Long courseId);
+
+    void deleteByIdAndCourseId(Long id, Long courseId);
+
 }
