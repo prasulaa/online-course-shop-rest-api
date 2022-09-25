@@ -1,4 +1,4 @@
-package pl.edu.pw.restapi.security;
+package pl.edu.pw.restapi.security.authentication;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -14,6 +14,8 @@ public class RestAuthenticationFailureHandler extends SimpleUrlAuthenticationFai
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+        //TODO response.getOutputStream().print();
+        //  i wez tu wrzuc jakis api error cos takiego wiesz co jest piec
         super.onAuthenticationFailure(request, response, exception);
     }
 

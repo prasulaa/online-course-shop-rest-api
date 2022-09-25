@@ -1,4 +1,4 @@
-package pl.edu.pw.restapi.security;
+package pl.edu.pw.restapi.security.authentication;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

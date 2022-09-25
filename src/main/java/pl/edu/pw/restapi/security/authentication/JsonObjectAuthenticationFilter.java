@@ -1,4 +1,4 @@
-package pl.edu.pw.restapi.security;
+package pl.edu.pw.restapi.security.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class JsonObjectAuthenticationFilter extends UsernamePasswordAuthenticati
             setDetails(request, token);
             return this.getAuthenticationManager().authenticate(token);
         } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new CustomAuthenticationException("Wrong data format");
         }
     }
 
