@@ -29,14 +29,8 @@ public class CourseLessonController {
                                        @PathVariable("sectionId") Long sectionId,
                                        @PathVariable("lessonId") Long lessonId,
                                        @AuthenticationPrincipal String username) {
-        try {
-            CourseLessonDTO lesson = courseLessonService.getLesson(courseId, sectionId, lessonId, username);
-            return ResponseEntity.ok(lesson);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        CourseLessonDTO lesson = courseLessonService.getLesson(courseId, sectionId, lessonId, username);
+        return ResponseEntity.ok(lesson);
     }
 
     @PostMapping
@@ -44,16 +38,8 @@ public class CourseLessonController {
                                           @PathVariable("sectionId") Long sectionId,
                                           @RequestBody @Valid CreateCourseLessonDTO lesson,
                                           @AuthenticationPrincipal String username) {
-        try {
-            CourseLessonDTO createdLesson = courseLessonService.createLesson(courseId, sectionId, lesson, username);
-            return new ResponseEntity<>(createdLesson, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        CourseLessonDTO createdLesson = courseLessonService.createLesson(courseId, sectionId, lesson, username);
+        return new ResponseEntity<>(createdLesson, HttpStatus.CREATED);
     }
 
     @PutMapping("{lessonId}")
@@ -62,16 +48,8 @@ public class CourseLessonController {
                                           @PathVariable("lessonId") Long lessonId,
                                           @RequestBody @Valid UpdateCourseLessonDTO lesson,
                                           @AuthenticationPrincipal String username) {
-        try {
-            CourseLessonDTO updatedLesson = courseLessonService.updateLesson(courseId, sectionId, lessonId, lesson, username);
-            return ResponseEntity.ok(updatedLesson);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        CourseLessonDTO updatedLesson = courseLessonService.updateLesson(courseId, sectionId, lessonId, lesson, username);
+        return ResponseEntity.ok(updatedLesson);
     }
 
     @DeleteMapping("{lessonId}")
@@ -79,14 +57,8 @@ public class CourseLessonController {
                                           @PathVariable("sectionId") Long sectionId,
                                           @PathVariable("lessonId") Long lessonId,
                                           @AuthenticationPrincipal String username) {
-        try {
-            courseLessonService.deleteLesson(courseId, sectionId, lessonId, username);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        courseLessonService.deleteLesson(courseId, sectionId, lessonId, username);
+        return ResponseEntity.noContent().build();
     }
 
 }

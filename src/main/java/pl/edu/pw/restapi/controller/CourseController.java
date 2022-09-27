@@ -41,68 +41,36 @@ public class CourseController {
                                         @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                         @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                         @RequestParam(value = "sort", required = false) Sort.Direction sort) {
-        try {
-            List<CourseDTO> courses = courseService.getCourses(title, categories, difficulties, priceMin, priceMax, pageNumber, pageSize, sort);
-            return ResponseEntity.ok(courses);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<CourseDTO> courses = courseService.getCourses(title, categories, difficulties, priceMin, priceMax, pageNumber, pageSize, sort);
+        return ResponseEntity.ok(courses);
     }
 
     @GetMapping("{id}/details")
     public ResponseEntity<?> getCourseDetails(@PathVariable("id") Long id,
                                               @AuthenticationPrincipal String username) {
-        try {
-            CourseDetailsDTO course = courseService.getCourseDetails(id, username);
-            return ResponseEntity.ok(course);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        CourseDetailsDTO course = courseService.getCourseDetails(id, username);
+        return ResponseEntity.ok(course);
     }
 
     @PostMapping
     public ResponseEntity<?> createCourse(@RequestBody @Valid CreateCourseDTO course) {
-        try {
-            CourseDetailsDTO returnDetails = courseService.createCourse(course);
-            return new ResponseEntity<>(returnDetails, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        CourseDetailsDTO returnDetails = courseService.createCourse(course);
+        return new ResponseEntity<>(returnDetails, HttpStatus.CREATED);
     }
 
     @PutMapping("{id}")
     public ResponseEntity<?> updateCourse(@RequestBody @Valid UpdateCourseDTO course,
                                           @PathVariable("id") Long id,
                                           @AuthenticationPrincipal String username) {
-        try {
-            CourseDetailsDTO returnDetails = courseService.updateCourse(course, id, username);
-            return ResponseEntity.ok(returnDetails);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        CourseDetailsDTO returnDetails = courseService.updateCourse(course, id, username);
+        return ResponseEntity.ok(returnDetails);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteCourse(@PathVariable("id") Long id,
                                           @AuthenticationPrincipal String username) {
-        try {
-            courseService.deleteCourse(id, username);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        courseService.deleteCourse(id, username);
+        return ResponseEntity.noContent().build();
     }
 
 }

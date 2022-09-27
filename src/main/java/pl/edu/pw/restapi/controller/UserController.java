@@ -26,14 +26,8 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterCredentialsDTO credentials) {
-        try {
-            userService.registerUser(credentials);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+        userService.registerUser(credentials);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

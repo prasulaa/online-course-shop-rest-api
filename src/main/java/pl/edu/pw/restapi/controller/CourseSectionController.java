@@ -28,30 +28,16 @@ public class CourseSectionController {
     public ResponseEntity<?> getCourseSection(@PathVariable("courseId") Long courseId,
                                               @PathVariable("sectionId") Long sectionId,
                                               @AuthenticationPrincipal String username) {
-        try {
-            CourseSectionDTO section = courseSectionService.getCourseSection(courseId, sectionId, username);
-            return ResponseEntity.ok(section);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        CourseSectionDTO section = courseSectionService.getCourseSection(courseId, sectionId, username);
+        return ResponseEntity.ok(section);
     }
 
     @PostMapping
     public ResponseEntity<?> createCourseSection(@PathVariable("courseId") Long courseId,
                                                  @RequestBody @Valid CreateCourseSectionDTO section,
                                                  @AuthenticationPrincipal String username) {
-        try {
-            CourseSectionDTO createdSection = courseSectionService.createCourseSection(courseId, section, username);
-            return new ResponseEntity<>(createdSection, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        CourseSectionDTO createdSection = courseSectionService.createCourseSection(courseId, section, username);
+        return new ResponseEntity<>(createdSection, HttpStatus.CREATED);
     }
 
     @PutMapping("{sectionId}")
@@ -59,29 +45,15 @@ public class CourseSectionController {
                                                  @PathVariable("sectionId") Long sectionId,
                                                  @RequestBody @Valid UpdateCourseSectionDTO section,
                                                  @AuthenticationPrincipal String username) {
-        try {
-            CourseSectionDTO updatedSection = courseSectionService.updateCourseSection(courseId, sectionId, section, username);
-            return ResponseEntity.ok(updatedSection);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        CourseSectionDTO updatedSection = courseSectionService.updateCourseSection(courseId, sectionId, section, username);
+        return ResponseEntity.ok(updatedSection);
     }
 
     @DeleteMapping("{sectionId}")
     public ResponseEntity<?> deleteCourseSection(@PathVariable("courseId") Long courseId,
                                                  @PathVariable("sectionId") Long sectionId,
                                                  @AuthenticationPrincipal String username) {
-        try {
-            courseSectionService.deleteCourseSection(courseId, sectionId, username);
-            return ResponseEntity.noContent().build();
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        courseSectionService.deleteCourseSection(courseId, sectionId, username);
+        return ResponseEntity.noContent().build();
     }
 }

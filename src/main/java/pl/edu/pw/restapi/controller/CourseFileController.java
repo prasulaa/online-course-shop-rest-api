@@ -13,6 +13,7 @@ import pl.edu.pw.restapi.dto.CourseFileInfoDTO;
 import pl.edu.pw.restapi.service.CourseFileService;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,61 +26,37 @@ public class CourseFileController {
     @GetMapping
     public ResponseEntity<?> getCourseFiles(@PathVariable("courseId") Long courseId,
                                             @AuthenticationPrincipal String username) {
-        try {
-            List<CourseFileInfoDTO> courseFiles = courseFileService.getCourseFiles(courseId, username);
-            return ResponseEntity.ok(courseFiles);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<CourseFileInfoDTO> courseFiles = courseFileService.getCourseFiles(courseId, username);
+        return ResponseEntity.ok(courseFiles);
     }
 
     @GetMapping("{fileId}")
     public ResponseEntity<?> getCourseFile(@PathVariable("courseId") Long courseId,
                                            @PathVariable("fileId") Long fileId,
                                            @AuthenticationPrincipal String username) {
-        try {
-            username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
-            CourseFileDTO file = courseFileService.getCourseFile(courseId, fileId, username);
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
-                    .body(file.getData());
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
+        CourseFileDTO file = courseFileService.getCourseFile(courseId, fileId, username);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
+                .body(file.getData());
     }
 
     @PostMapping
     public ResponseEntity<?> uploadCourseFile(@PathVariable("courseId") Long courseId,
                                               @RequestParam("file") MultipartFile file,
-                                              @AuthenticationPrincipal String username) {
-        try {
-            username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
-            CourseFileInfoDTO fileInfo = courseFileService.createCourseFile(courseId, file, username);
-            return new ResponseEntity<>(fileInfo, HttpStatus.CREATED);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+                                              @AuthenticationPrincipal String username) throws IOException {
+        username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
+        CourseFileInfoDTO fileInfo = courseFileService.createCourseFile(courseId, file, username);
+        return new ResponseEntity<>(fileInfo, HttpStatus.CREATED);
     }
 
     @DeleteMapping("{fileId}")
     public ResponseEntity<?> deleteCourseFile(@PathVariable("courseId") Long courseId,
                                               @PathVariable("fileId") Long fileId,
                                               @AuthenticationPrincipal String username) {
-        try {
-            username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
-            courseFileService.deleteCourseFile(courseId, fileId, username);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (EntityNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
+        courseFileService.deleteCourseFile(courseId, fileId, username);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

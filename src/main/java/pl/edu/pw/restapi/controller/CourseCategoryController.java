@@ -23,12 +23,8 @@ public class CourseCategoryController {
 
     @GetMapping
     public ResponseEntity<?> getCategories() {
-        try {
-            List<CourseCategoryDTO> categories = courseCategoryService.getCategories();
-            return ResponseEntity.ok(categories);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<CourseCategoryDTO> categories = courseCategoryService.getCategories();
+        return ResponseEntity.ok(categories);
     }
 
 }
