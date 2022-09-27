@@ -2,6 +2,7 @@ package pl.edu.pw.restapi.security.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -43,7 +44,7 @@ public class JsonObjectAuthenticationFilter extends UsernamePasswordAuthenticati
         String password = authRequest.getPassword();
 
         if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("Username and password cannot be empty");
+            throw new BadCredentialsException("Username and password cannot be empty");
         } else {
             return new UsernamePasswordAuthenticationToken(username, password);
         }
