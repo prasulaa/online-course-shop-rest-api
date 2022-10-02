@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 public class CourseCategoryMapper {
 
+    //TODO change static methods to non static in every mapper
+
     public static List<String> mapNames(List<CourseCategory> categories) {
         if (categories == null) {
             return null;
@@ -40,40 +42,20 @@ public class CourseCategoryMapper {
     }
 
     private static List<CourseCategoryDTO> mapDistinct(List<CourseCategory> categories) {
-        int size = categories.size();
-        List<CourseCategoryDTO> mappedCategories = new ArrayList<>();
-
-        for (int i = 0; i < size; i++) {
-            if (!isPresent(i, categories)) {
-                CourseCategoryDTO mappedCategory = map(categories.get(i));
-                mappedCategories.add(mappedCategory);
-            }
-        }
-
-        return mappedCategories;
+        return categories.stream()
+                .filter((c) -> !isPresentInSubcategories(c.getId(), categories))
+                .map(CourseCategoryMapper::map)
+                .collect(Collectors.toList());
     }
 
-    private static boolean isPresent(int index, List<CourseCategory> categories) {
-        int size = categories.size();
-        long categoryId = categories.get(index).getId();
-
-        for (int i = index + 1; i < size; i++) {
-            if (isPresent(categoryId, categories.get(i).getSubcategories())) {
-                return true;
-            }
-        }
-        return false;
+    private static boolean isPresentInSubcategories(long categoryId, List<CourseCategory> categories) {
+        return categories.stream()
+                .anyMatch((c) -> isPresent(categoryId, c.getSubcategories()));
     }
 
     private static boolean isPresent(long id, List<CourseCategory> categories) {
-        for (CourseCategory c : categories) {
-            if (c.getId().equals(id)) {
-                return true;
-            } else if (isPresent(id, c.getSubcategories())) {
-                return true;
-            }
-        }
-        return false;
+        return categories.stream()
+                .anyMatch((c) -> (c.getId().equals(id) || isPresent(id, c.getSubcategories())));
     }
 
     private static List<CourseCategoryDTO> mapSubcategories(List<CourseCategory> categories) {
