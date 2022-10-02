@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MultipartException;
 import pl.edu.pw.restapi.dto.ExceptionDTO;
 
 import javax.persistence.EntityNotFoundException;
@@ -65,6 +66,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionDTO> handle(HttpMessageNotReadableException e) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         String msg = "Wrong json format";
+
+        return new ResponseEntity<>(new ExceptionDTO(status, msg), status);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDTO> handle(MultipartException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String msg = "Wrong file format";
 
         return new ResponseEntity<>(new ExceptionDTO(status, msg), status);
     }
