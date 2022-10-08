@@ -9,6 +9,7 @@ import pl.edu.pw.restapi.domain.CourseCategory;
 import pl.edu.pw.restapi.dto.CourseCategoryDTO;
 import pl.edu.pw.restapi.repository.CourseCategoryRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +22,7 @@ public class CourseCategoryServiceTest {
     private CourseCategoryRepository courseCategoryRepository;
     @InjectMocks
     private CourseCategoryServiceImpl courseCategoryService;
+
 
     @Test
     public void shouldReturnDTOListWhenCategoriesArePresentInRepository() {
@@ -67,6 +69,53 @@ public class CourseCategoryServiceTest {
                 () -> assertEquals(2, actualCategories.size()),
                 () -> assertEqualsCategories(categoriesFromRepo.get(0), actualCategories.get(0)),
                 () -> assertEqualsCategories(categoriesFromRepo.get(1), actualCategories.get(1))
+        );
+    }
+
+    @Test
+    public void shouldReturnCategoriesWhenIdsAreGiven() {
+        List<CourseCategory> categoriesFromRepo = List.of(
+                new CourseCategory(1L, "category1", null),
+                new CourseCategory(2L, "category2", null),
+                new CourseCategory(3L, "category3", null)
+        );
+        List<Long> givenIds = List.of(1L, 3L);
+
+        when(courseCategoryRepository.findAll())
+                .thenReturn(categoriesFromRepo);
+
+        List<CourseCategory> actualCategories = courseCategoryService.getCategories(givenIds);
+
+        assertAll(
+                () -> assertEquals(givenIds.size(), actualCategories.size()),
+                () -> assertEqualsCategories(categoriesFromRepo.get(0), actualCategories.get(0)),
+                () -> assertEqualsCategories(categoriesFromRepo.get(2), actualCategories.get(1))
+        );
+    }
+
+    @Test
+    public void shouldThrowIllegalArgumentExceptionWhenIdIsNotInRepository() {
+        List<CourseCategory> categoriesFromRepo = List.of(
+                new CourseCategory(1L, "category1", null),
+                new CourseCategory(2L, "category2", null),
+                new CourseCategory(3L, "category3", null)
+        );
+        List<Long> givenIds = List.of(1L, 4L);
+
+        when(courseCategoryRepository.findAll())
+                .thenReturn(categoriesFromRepo);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> courseCategoryService.getCategories(givenIds)
+        );
+        assertEquals("Category not found", exception.getMessage());
+    }
+
+    private void assertEqualsCategories(CourseCategory expected, CourseCategory actual) {
+        assertAll(
+                () -> assertEquals(expected.getId(), actual.getId()),
+                () -> assertEquals(expected.getCategory(), actual.getCategory())
         );
     }
 
