@@ -57,13 +57,13 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalArgumentException(validator.getMessages(result).toString());
             }
         } else {
-            throw new IllegalArgumentException("Passwords are not equals");
+            throw new IllegalArgumentException("Passwords are not equal");
         }
     }
 
     private PasswordValidator passwordValidator() {
         return new PasswordValidator(List.of(
-                new LengthRule(1, 20),
+                new LengthRule(6, 20),
                 new UppercaseCharacterRule(1),
                 new DigitCharacterRule(1),
                 new AlphabeticalCharacterRule(1)
