@@ -7,6 +7,7 @@ import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -76,6 +77,13 @@ public class GlobalExceptionHandler {
         String msg = "Wrong file format";
 
         return new ResponseEntity<>(new ExceptionDTO(status, msg), status);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDTO> handle(HttpRequestMethodNotSupportedException e) {
+        HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
+
+        return new ResponseEntity<>(new ExceptionDTO(status), status);
     }
 
     @ExceptionHandler
