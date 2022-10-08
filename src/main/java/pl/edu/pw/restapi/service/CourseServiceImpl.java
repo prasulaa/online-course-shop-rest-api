@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
-    private final CourseCategoryRepository courseCategoryRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private CourseCategoryService courseCategoryService;
 
     @Override
     public List<CourseDTO> getCourses(String title, List<Long> categories, List<Long> difficulties, Double priceMin,
@@ -45,15 +45,19 @@ public class CourseServiceImpl implements CourseService {
         User user = (User) userService.loadUserByUsername(username);
 
         Course course = courseRepository.findByCourseIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Course " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
         return CourseMapper.mapDetails(course);
     }
 
     @Override
-    public CourseDetailsDTO createCourse(CreateCourseDTO course) {
-        List<CourseCategory> categories = getCourseCategories(course.getCategories());
+    public CourseDetailsDTO createCourse(CreateCourseDTO course, String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        List<CourseCategory> categories = courseCategoryService.getCategories(course.getCategories());
         Course mappedCourse = CourseMapper.map(course, categories);
 
+        user.getReleasedCourses().add(mappedCourse);
+        userRepository.save(user);
         courseRepository.save(mappedCourse);
 
         return CourseMapper.mapDetails(mappedCourse);
@@ -64,7 +68,7 @@ public class CourseServiceImpl implements CourseService {
         User user = (User) userService.loadUserByUsername(username);
 
         Course courseToUpdate = courseRepository.findReleasedCourseByCourseIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Course " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
         updateCourse(course, courseToUpdate);
         courseRepository.save(courseToUpdate);
@@ -78,7 +82,7 @@ public class CourseServiceImpl implements CourseService {
         User user = (User) userService.loadUserByUsername(username);
 
         Course courseToDelete = courseRepository.findReleasedCourseByCourseIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Course " + id + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
         user.getReleasedCourses().remove(courseToDelete);
         userRepository.save(user);
@@ -86,20 +90,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     private void updateCourse(UpdateCourseDTO course, Course courseToUpdate) {
-        List<CourseCategory> categories = getCourseCategories(course.getCategories());
+        List<CourseCategory> categories = courseCategoryService.getCategories(course.getCategories());
         CourseUpdater courseUpdater = new CourseUpdater();
         courseUpdater.update(course, courseToUpdate, categories);
-    }
-
-    private List<CourseCategory> getCourseCategories(List<Long> ids) {
-        if (ids == null) {
-            return null;
-        } else {
-            return ids.stream()
-                    .map(id -> courseCategoryRepository.findById(id)
-                            .orElseThrow(() -> new IllegalArgumentException("Category " + id + " not found")))
-                    .collect(Collectors.toList());
-        }
     }
 
     private Pageable getPageable(Integer pageNumber, Integer pageSize, Sort.Direction sort) {
