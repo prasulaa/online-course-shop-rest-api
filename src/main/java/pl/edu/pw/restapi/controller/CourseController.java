@@ -46,9 +46,8 @@ public class CourseController {
     }
 
     @GetMapping("{id}/details")
-    public ResponseEntity<?> getCourseDetails(@PathVariable("id") Long id,
-                                              @AuthenticationPrincipal String username) {
-        CourseDetailsDTO course = courseService.getCourseDetails(id, username);
+    public ResponseEntity<?> getCourseDetails(@PathVariable("id") Long id) {
+        CourseDetailsDTO course = courseService.getCourseDetails(id);
         return ResponseEntity.ok(course);
     }
 

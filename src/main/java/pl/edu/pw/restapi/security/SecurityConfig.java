@@ -64,7 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/register").permitAll()
-                .antMatchers(HttpMethod.GET, "/course").permitAll()
+                .antMatchers(HttpMethod.GET, "/courses").permitAll()
+                .antMatchers(HttpMethod.GET, "/courses/*/details").permitAll()
                 .antMatchers("/categories").permitAll()
                 .antMatchers("/courses/*/files/**").permitAll() // TODO delete this
                 .anyRequest().authenticated()

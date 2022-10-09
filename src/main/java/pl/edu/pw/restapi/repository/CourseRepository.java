@@ -31,6 +31,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                          @Param("priceMax") Double priceMax,
                          Pageable pageable);
 
+    Optional<Course> findById(Long id);
+
     @Query(nativeQuery = true, value =
             "select c.* from course c " +
                     "inner join (" +

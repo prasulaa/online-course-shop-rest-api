@@ -88,14 +88,11 @@ public class CourseServiceTest {
     @Test
     public void shouldReturnCourseDetailsWhenUserAndCourseExist() {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
-        User user = new User(1L, "username", "password", List.of(), List.of());
 
-        when(userService.loadUserByUsername(user.getUsername()))
-                .thenReturn(user);
-        when(courseRepository.findByCourseIdAndUserId(course.getId(), user.getId()))
+        when(courseRepository.findById(course.getId()))
                 .thenReturn(Optional.of(course));
 
-        CourseDetailsDTO actualCourse = courseService.getCourseDetails(course.getId(), user.getUsername());
+        CourseDetailsDTO actualCourse = courseService.getCourseDetails(course.getId());
 
         assertAll(
                 () -> assertEquals(course.getId(), actualCourse.getId()),
@@ -109,34 +106,15 @@ public class CourseServiceTest {
     }
 
     @Test
-    public void shouldThrowUsernameNotFoundExceptionWhenGettingCourseAndUserDoesNotExist() {
-        Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
-        User user = new User(1L, "username", "password", List.of(), List.of());
-        String exceptionMsg = "Not found";
-
-        when(userService.loadUserByUsername(user.getUsername()))
-                .thenThrow(new UsernameNotFoundException(exceptionMsg));
-
-        UsernameNotFoundException exception = assertThrows(
-                UsernameNotFoundException.class,
-                () -> courseService.getCourseDetails(course.getId(), user.getUsername())
-        );
-        assertEquals(exceptionMsg, exception.getMessage());
-    }
-
-    @Test
     public void shouldThrowEntityNotFoundExceptionWhenGettingCourseAndCourseDoesNotExist() {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
-        User user = new User(1L, "username", "password", List.of(), List.of());
 
-        when(userService.loadUserByUsername(user.getUsername()))
-                .thenReturn(user);
-        when(courseRepository.findByCourseIdAndUserId(course.getId(), user.getId()))
+        when(courseRepository.findById(course.getId()))
                 .thenReturn(Optional.empty());
 
         EntityNotFoundException exception = assertThrows(
                 EntityNotFoundException.class,
-                () -> courseService.getCourseDetails(course.getId(), user.getUsername())
+                () -> courseService.getCourseDetails(course.getId())
         );
         assertEquals("Course not found", exception.getMessage());
     }

@@ -13,7 +13,7 @@ public interface CourseService {
     List<CourseDTO> getCourses(String title, List<Long> categories, List<Long> difficulties, Double priceMin,
                                Double priceMax, Integer pageNumber, Integer pageSize, Sort.Direction sort);
 
-    CourseDetailsDTO getCourseDetails(Long id, String username);
+    CourseDetailsDTO getCourseDetails(Long id);
 
     CourseDetailsDTO createCourse(CreateCourseDTO course, String username);
 

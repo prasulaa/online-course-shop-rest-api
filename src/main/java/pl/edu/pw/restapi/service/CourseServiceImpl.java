@@ -41,10 +41,8 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public CourseDetailsDTO getCourseDetails(Long id, String username) {
-        User user = (User) userService.loadUserByUsername(username);
-
-        Course course = courseRepository.findByCourseIdAndUserId(id, user.getId())
+    public CourseDetailsDTO getCourseDetails(Long id) {
+        Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
         return CourseMapper.mapDetails(course);
     }
@@ -57,8 +55,8 @@ public class CourseServiceImpl implements CourseService {
         Course mappedCourse = CourseMapper.map(course, categories);
 
         user.getReleasedCourses().add(mappedCourse);
-        userRepository.save(user);
         courseRepository.save(mappedCourse);
+        userRepository.save(user);
 
         return CourseMapper.mapDetails(mappedCourse);
     }
