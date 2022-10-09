@@ -1,0 +1,22 @@
+{
+	"info": {
+		"_postman_id": "2f5eab74-9411-446e-9af0-567d5568c264",
+		"name": "course-shop-api-tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register user",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

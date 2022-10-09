@@ -22,6 +22,7 @@ public class CreateCourseDTO {
     @NotEmpty(message = "Thumbnail cannot be empty")
     private String thumbnail;
     @PositiveOrZero(message = "Price cannot be negative")
+    @NotNull(message = "Price cannot be empty")
     private Double price;
     @NotEmpty(message = "Categories cannot be empty")
     private List<Long> categories;
