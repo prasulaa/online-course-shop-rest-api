@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/course/{courseId}/file")
+@RequestMapping("/courses/{courseId}/files")
 @AllArgsConstructor
 public class CourseFileController {
 

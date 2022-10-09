@@ -17,6 +17,10 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class UserController {
 
+    //TODO
+    // get released courses
+    // get bought courses
+
     private final UserService userService;
 
     @PostMapping("/login")

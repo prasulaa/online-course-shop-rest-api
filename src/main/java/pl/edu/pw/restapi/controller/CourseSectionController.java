@@ -15,7 +15,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/course/{courseId}/section")
+@RequestMapping("/courses/{courseId}/sections")
 public class CourseSectionController {
 
     private final CourseSectionService courseSectionService;

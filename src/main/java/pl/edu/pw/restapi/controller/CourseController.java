@@ -19,7 +19,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/course")
+@RequestMapping("/courses")
 public class CourseController {
 
     //TODO logger and

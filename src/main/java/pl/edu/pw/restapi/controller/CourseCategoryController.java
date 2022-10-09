@@ -12,7 +12,7 @@ import pl.edu.pw.restapi.service.CourseCategoryService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/categories")
 public class CourseCategoryController {
 
     private final CourseCategoryService courseCategoryService;
