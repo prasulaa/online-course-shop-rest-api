@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2f5eab74-9411-446e-9af0-567d5568c264",
+		"_postman_id": "906bd7fc-a0b0-448f-9cc5-243267158ac0",
 		"name": "course-shop-api-tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,12 +9,2238 @@
 			"name": "User",
 			"item": [
 				{
-					"name": "Register user",
-					"request": {
-						"method": "GET",
-						"header": []
-					},
-					"response": []
+					"name": "Positive",
+					"item": [
+						{
+							"name": "Register user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"passwordRepeat\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/register",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const json = pm.response.json();\r",
+											"postman.setGlobalVariable(\"token\", \"Bearer \" + json.token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/login",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "Login - empty values",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"123\",\r\n    \"password\": \"321\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/login",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Login - wrong credentials",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", function () {\r",
+											"    pm.response.to.have.status(401);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"123\",\r\n    \"password\": \"321\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/login",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user - null values",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/register",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user - username is taken",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"passwordRepeat\": \"{{password}}abc\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/register",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user - password not repeated",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"passwordRepeat\": \"{{password}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/register",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Register user - password not strong enough",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"passwordRepeat\": \"123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/register",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Category",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "{{api-url}}/categories",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"const json = pm.response.json();\r",
+											"const categoryId = json[0].id;\r",
+											"postman.setGlobalVariable(\"categoryId\", categoryId);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/categories",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Course",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "Get all courses",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all courses - with filters",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses?category=1&difficulty=1&pageSize=24&priceMax=0&sort=ASC",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses"
+									],
+									"query": [
+										{
+											"key": "category",
+											"value": "1"
+										},
+										{
+											"key": "difficulty",
+											"value": "1"
+										},
+										{
+											"key": "pageSize",
+											"value": "24"
+										},
+										{
+											"key": "priceMax",
+											"value": "0"
+										},
+										{
+											"key": "sort",
+											"value": "ASC"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get all courses - with one filter",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses?category=1",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses"
+									],
+									"query": [
+										{
+											"key": "category",
+											"value": "1"
+										},
+										{
+											"key": "difficulty",
+											"value": "EASY",
+											"disabled": true
+										},
+										{
+											"key": "pageSize",
+											"value": "24",
+											"disabled": true
+										},
+										{
+											"key": "priceMax",
+											"value": "0.0",
+											"disabled": true
+										},
+										{
+											"key": "sort",
+											"value": "ASC",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create course",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"const json = pm.response.json();\r",
+											"postman.setGlobalVariable(\"courseId\", json.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"categories\": [{{categoryId}}],\r\n  \"description\": \"Description\",\r\n  \"difficulty\": \"EASY\",\r\n  \"price\": 0.0,\r\n  \"scopes\": [\r\n    \"Scope1\",\r\n    \"Scope2\"\r\n  ],\r\n  \"thumbnail\": \"thumbnail\",\r\n  \"title\": \"Course for tests\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get course details",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/details",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"details"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit course",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"description\": \"Changed description\",\r\n  \"difficulty\": \"EASY\",\r\n  \"price\": 15.0,\r\n  \"title\": \"Changed title\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete course",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create course - for later purposes",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"const json = pm.response.json();\r",
+											"postman.setGlobalVariable(\"courseId\", json.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"categories\": [{{categoryId}}],\r\n  \"description\": \"Description\",\r\n  \"difficulty\": \"EASY\",\r\n  \"price\": 0.0,\r\n  \"scopes\": [\r\n    \"Scope1\",\r\n    \"Scope2\"\r\n  ],\r\n  \"thumbnail\": \"thumbnail\",\r\n  \"title\": \"Course for tests\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "Create course - null values",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"categories\": [{{categoryId}}],\r\n  \"description\": \"Description\",\r\n  \"difficulty\": \"EASY\",\r\n  \"scopes\": [\r\n    \"Scope1\",\r\n    \"Scope2\"\r\n  ],\r\n  \"title\": \"Course for tests\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create course - wrong values",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"categories\": [-1],\r\n  \"description\": \"Description\",\r\n  \"difficulty\": \"WRONG\",\r\n  \"price\": -1.50,\r\n  \"scopes\": [\r\n    \"Scope1\",\r\n    \"Scope2\"\r\n  ],\r\n  \"thumbnail\": \"\",\r\n  \"title\": \"Course for tests\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit course - not found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"description\": \"Changed description\",\r\n  \"difficulty\": \"EASY\",\r\n  \"price\": 15.0,\r\n  \"title\": \"Changed title\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/0",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit course - wrong values",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"description\": \"Changed description\",\r\n  \"difficulty\": \"EASY\",\r\n  \"price\": -1.0,\r\n  \"title\": \"Changed title\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete course - not found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/0",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"0"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Section",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "Create section",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"const json = pm.response.json();\r",
+											"postman.setGlobalVariable(\"sectionId\", json.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"section name\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get section",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit section",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"changed section name\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete section",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create section - for later purposes",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"const json = pm.response.json();\r",
+											"postman.setGlobalVariable(\"sectionId\", json.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"section name\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "Create section - name is taken",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"section name\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create section - empty field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get section - wrong course id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/0/sections/{{sectionId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"0",
+										"sections",
+										"{{sectionId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get section - wrong section id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/0",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit section - empty json",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete section - wrong section id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/0",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete section - wrong course id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/0/sections/{{sectionId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"0",
+										"sections",
+										"{{sectionId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Lesson",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "Create lesson",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"const json = pm.response.json();\r",
+											"postman.setGlobalVariable(\"lessonId\", json.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Lesson name\",\r\n    \"data\": \"Lesson data\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}",
+										"lessons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get lesson",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons/{{lessonId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}",
+										"lessons",
+										"{{lessonId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit lesson",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Changed lesson name\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons/{{lessonId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}",
+										"lessons",
+										"{{lessonId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete lesson",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 204\", function () {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons/{{lessonId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}",
+										"lessons",
+										"{{lessonId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create lesson - for later purposes",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"const json = pm.response.json();\r",
+											"postman.setGlobalVariable(\"lessonId\", json.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Lesson name\",\r\n    \"data\": \"Lesson data\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}",
+										"lessons"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "Create lesson - name is taken",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Lesson name\",\r\n    \"data\": \"Lesson data\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}",
+										"lessons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get lesson - wrong section id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/0/lessons/{{lessonId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"0",
+										"lessons",
+										"{{lessonId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get lesson - wrong lesson id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/0/sections/{{sectionId}}/lessons/{{lessonId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"0",
+										"sections",
+										"{{sectionId}}",
+										"lessons",
+										"{{lessonId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get lesson - wrong course id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons/0",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}",
+										"lessons",
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit lesson - empty field",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 400\", function () {\r",
+											"    pm.response.to.have.status(400);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons/{{lessonId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}",
+										"lessons",
+										"{{lessonId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete lesson - wrong lesson id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons/0",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"{{sectionId}}",
+										"lessons",
+										"0"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete lesson - wrong section id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/{{courseId}}/sections/0/lessons/{{lessonId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"{{courseId}}",
+										"sections",
+										"0",
+										"lessons",
+										"{{lessonId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete lesson - wrong course id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 404\", function () {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/0/sections/{{sectionId}}/lessons/{{lessonId}}",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"0",
+										"sections",
+										"{{sectionId}}",
+										"lessons",
+										"{{lessonId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
