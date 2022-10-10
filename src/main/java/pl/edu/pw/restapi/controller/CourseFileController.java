@@ -7,12 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseFileDTO;
 import pl.edu.pw.restapi.dto.CourseFileInfoDTO;
 import pl.edu.pw.restapi.service.CourseFileService;
 
-import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,14 +22,14 @@ public class CourseFileController {
     private final CourseFileService courseFileService;
 
     @GetMapping
-    public ResponseEntity<?> getCourseFiles(@PathVariable("courseId") Long courseId,
+    public ResponseEntity<List<CourseFileInfoDTO>> getCourseFiles(@PathVariable("courseId") Long courseId,
                                             @AuthenticationPrincipal String username) {
         List<CourseFileInfoDTO> courseFiles = courseFileService.getCourseFiles(courseId, username);
         return ResponseEntity.ok(courseFiles);
     }
 
     @GetMapping("{fileId}")
-    public ResponseEntity<?> getCourseFile(@PathVariable("courseId") Long courseId,
+    public ResponseEntity<byte[]> getCourseFile(@PathVariable("courseId") Long courseId,
                                            @PathVariable("fileId") Long fileId,
                                            @AuthenticationPrincipal String username) {
         username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
@@ -42,7 +40,7 @@ public class CourseFileController {
     }
 
     @PostMapping
-    public ResponseEntity<?> uploadCourseFile(@PathVariable("courseId") Long courseId,
+    public ResponseEntity<CourseFileInfoDTO> uploadCourseFile(@PathVariable("courseId") Long courseId,
                                               @RequestParam("file") MultipartFile file,
                                               @AuthenticationPrincipal String username) throws IOException {
         username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
@@ -51,7 +49,7 @@ public class CourseFileController {
     }
 
     @DeleteMapping("{fileId}")
-    public ResponseEntity<?> deleteCourseFile(@PathVariable("courseId") Long courseId,
+    public ResponseEntity<Void> deleteCourseFile(@PathVariable("courseId") Long courseId,
                                               @PathVariable("fileId") Long fileId,
                                               @AuthenticationPrincipal String username) {
         username = username.equals("anonymousUser") ? "string" : username; // TODO delete this

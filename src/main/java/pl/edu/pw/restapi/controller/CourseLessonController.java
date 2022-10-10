@@ -4,14 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseLessonDTO;
-import pl.edu.pw.restapi.dto.CreateCourseDTO;
 import pl.edu.pw.restapi.dto.CreateCourseLessonDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseLessonDTO;
 import pl.edu.pw.restapi.service.CourseLessonService;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 
 @RestController
@@ -25,7 +22,7 @@ public class CourseLessonController {
     }
 
     @GetMapping("{lessonId}")
-    public ResponseEntity<?> getLesson(@PathVariable("courseId") Long courseId,
+    public ResponseEntity<CourseLessonDTO> getLesson(@PathVariable("courseId") Long courseId,
                                        @PathVariable("sectionId") Long sectionId,
                                        @PathVariable("lessonId") Long lessonId,
                                        @AuthenticationPrincipal String username) {
@@ -34,7 +31,7 @@ public class CourseLessonController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createLesson(@PathVariable("courseId") Long courseId,
+    public ResponseEntity<CourseLessonDTO> createLesson(@PathVariable("courseId") Long courseId,
                                           @PathVariable("sectionId") Long sectionId,
                                           @RequestBody @Valid CreateCourseLessonDTO lesson,
                                           @AuthenticationPrincipal String username) {
@@ -43,7 +40,7 @@ public class CourseLessonController {
     }
 
     @PutMapping("{lessonId}")
-    public ResponseEntity<?> updateLesson(@PathVariable("courseId") Long courseId,
+    public ResponseEntity<CourseLessonDTO> updateLesson(@PathVariable("courseId") Long courseId,
                                           @PathVariable("sectionId") Long sectionId,
                                           @PathVariable("lessonId") Long lessonId,
                                           @RequestBody @Valid UpdateCourseLessonDTO lesson,
@@ -53,7 +50,7 @@ public class CourseLessonController {
     }
 
     @DeleteMapping("{lessonId}")
-    public ResponseEntity<?> deleteLesson(@PathVariable("courseId") Long courseId,
+    public ResponseEntity<Void> deleteLesson(@PathVariable("courseId") Long courseId,
                                           @PathVariable("sectionId") Long sectionId,
                                           @PathVariable("lessonId") Long lessonId,
                                           @AuthenticationPrincipal String username) {

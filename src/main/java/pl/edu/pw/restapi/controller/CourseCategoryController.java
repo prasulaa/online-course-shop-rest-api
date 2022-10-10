@@ -1,11 +1,9 @@
 package pl.edu.pw.restapi.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import pl.edu.pw.restapi.dto.CourseCategoryDTO;
 import pl.edu.pw.restapi.service.CourseCategoryService;
 
@@ -22,7 +20,7 @@ public class CourseCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getCategories() {
+    public ResponseEntity<List<CourseCategoryDTO>> getCategories() {
         List<CourseCategoryDTO> categories = courseCategoryService.getCategories();
         return ResponseEntity.ok(categories);
     }
