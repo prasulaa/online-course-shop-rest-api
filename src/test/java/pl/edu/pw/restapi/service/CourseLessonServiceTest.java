@@ -4,12 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.edu.pw.restapi.domain.*;
 import pl.edu.pw.restapi.dto.CourseLessonDTO;
 import pl.edu.pw.restapi.dto.CreateCourseLessonDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseLessonDTO;
+import pl.edu.pw.restapi.dto.mapper.CourseLessonMapper;
 import pl.edu.pw.restapi.repository.CourseLessonRepository;
 import pl.edu.pw.restapi.repository.CourseSectionRepository;
 
@@ -27,6 +29,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CourseLessonServiceTest {
 
+    @Spy
+    private CourseLessonMapper courseLessonMapper;
     @Mock
     private CourseLessonRepository courseLessonRepository;
     @Mock

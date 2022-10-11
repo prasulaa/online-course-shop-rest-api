@@ -1,5 +1,7 @@
 package pl.edu.pw.restapi.dto.mapper;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.CourseLesson;
 import pl.edu.pw.restapi.dto.CourseLessonDTO;
 import pl.edu.pw.restapi.dto.CourseSectionLessonDTO;
@@ -8,9 +10,11 @@ import pl.edu.pw.restapi.dto.CreateCourseLessonDTO;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
+@Service
 public class CourseLessonMapper {
 
-    public static CourseLessonDTO map(CourseLesson lesson) {
+    public CourseLessonDTO map(CourseLesson lesson) {
         if (lesson == null) {
             return null;
         } else {
@@ -22,7 +26,7 @@ public class CourseLessonMapper {
         }
     }
 
-    public static CourseLesson map(CreateCourseLessonDTO lesson) {
+    public CourseLesson map(CreateCourseLessonDTO lesson) {
         if (lesson == null) {
             return null;
         } else {
@@ -33,17 +37,17 @@ public class CourseLessonMapper {
         }
     }
 
-    public static List<CourseSectionLessonDTO> mapToCourseSectionLessonDTO(List<CourseLesson> lessons) {
+    public List<CourseSectionLessonDTO> mapToCourseSectionLessonDTO(List<CourseLesson> lessons) {
         if (lessons == null) {
             return null;
         } else {
             return lessons.stream()
-                    .map(CourseLessonMapper::mapToCourseSectionLessonDTO)
+                    .map(this::mapToCourseSectionLessonDTO)
                     .collect(Collectors.toList());
         }
     }
 
-    public static CourseSectionLessonDTO mapToCourseSectionLessonDTO(CourseLesson lesson) {
+    public CourseSectionLessonDTO mapToCourseSectionLessonDTO(CourseLesson lesson) {
         if (lesson == null) {
             return null;
         } else {

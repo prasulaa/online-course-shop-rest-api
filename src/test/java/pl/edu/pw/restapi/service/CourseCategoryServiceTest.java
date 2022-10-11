@@ -4,9 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.edu.pw.restapi.domain.CourseCategory;
 import pl.edu.pw.restapi.dto.CourseCategoryDTO;
+import pl.edu.pw.restapi.dto.mapper.CourseCategoryMapper;
 import pl.edu.pw.restapi.repository.CourseCategoryRepository;
 
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CourseCategoryServiceTest {
 
+    @Spy
+    private CourseCategoryMapper courseCategoryMapper;
     @Mock
     private CourseCategoryRepository courseCategoryRepository;
     @InjectMocks

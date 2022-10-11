@@ -25,6 +25,7 @@ public class CourseLessonServiceImpl implements CourseLessonService {
     private final CourseLessonRepository courseLessonRepository;
     private final CourseSectionRepository courseSectionRepository;
     private final UserService userService;
+    private final CourseLessonMapper courseLessonMapper;
 
 
     @Override
@@ -35,14 +36,14 @@ public class CourseLessonServiceImpl implements CourseLessonService {
                 .findCourseLessonByCourseIdAndSectionIdAndLessonIdAndUserId(courseId, sectionId, lessonId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Lesson not found"));
 
-        return CourseLessonMapper.map(lesson);
+        return courseLessonMapper.map(lesson);
     }
 
     @Override
     public CourseLessonDTO createLesson(Long courseId, Long sectionId, CreateCourseLessonDTO lesson, String username) {
         User user = (User) userService.loadUserByUsername(username);
 
-        CourseLesson createdLesson = CourseLessonMapper.map(lesson);
+        CourseLesson createdLesson = courseLessonMapper.map(lesson);
 
         CourseSection section = courseSectionRepository
                 .findReleasedCourseSectionByCourseIdAndSectionIdAndUserId(courseId, sectionId, user.getId())
@@ -51,7 +52,7 @@ public class CourseLessonServiceImpl implements CourseLessonService {
         checkIfSectionContainsLessonWithSameName(courseId, sectionId, lesson.getName());
         saveCourseLesson(createdLesson, section);
 
-        return CourseLessonMapper.map(createdLesson);
+        return courseLessonMapper.map(createdLesson);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class CourseLessonServiceImpl implements CourseLessonService {
 
         updateCourseLessonInDb(courseId, sectionId, lesson, lessonDTO);
 
-        return CourseLessonMapper.map(lesson);
+        return courseLessonMapper.map(lesson);
     }
 
     @Override

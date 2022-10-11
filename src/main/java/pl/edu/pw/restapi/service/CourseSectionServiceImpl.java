@@ -23,6 +23,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
     private final CourseRepository courseRepository;
     private final CourseSectionRepository courseSectionRepository;
     private final UserService userService;
+    private final CourseSectionMapper courseSectionMapper;
 
     @Override
     public CourseSectionDTO getCourseSection(Long courseId, Long sectionId, String username) {
@@ -32,7 +33,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
                 .findByCourseIdAndSectionIdAndUserId(courseId, sectionId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course section not found"));
 
-        return CourseSectionMapper.map(section);
+        return courseSectionMapper.map(section);
     }
 
     @Override
@@ -42,10 +43,10 @@ public class CourseSectionServiceImpl implements CourseSectionService {
         Course course = courseRepository.findReleasedCourseByCourseIdAndUserId(courseId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
-        CourseSection createdSection = CourseSectionMapper.map(section);
+        CourseSection createdSection = courseSectionMapper.map(section);
         addCourseSectionToDB(course, createdSection);
 
-        return CourseSectionMapper.map(createdSection);
+        return courseSectionMapper.map(createdSection);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
 
         updateCourseSectionInDB(courseId, sectionToUpdate, section);
 
-        return CourseSectionMapper.map(sectionToUpdate);
+        return courseSectionMapper.map(sectionToUpdate);
     }
 
     @Override

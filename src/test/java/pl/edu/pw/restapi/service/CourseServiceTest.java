@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import pl.edu.pw.restapi.domain.*;
@@ -12,6 +13,10 @@ import pl.edu.pw.restapi.dto.CourseDTO;
 import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 import pl.edu.pw.restapi.dto.CreateCourseDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseDTO;
+import pl.edu.pw.restapi.dto.mapper.CourseCategoryMapper;
+import pl.edu.pw.restapi.dto.mapper.CourseLessonMapper;
+import pl.edu.pw.restapi.dto.mapper.CourseMapper;
+import pl.edu.pw.restapi.dto.mapper.CourseSectionMapper;
 import pl.edu.pw.restapi.repository.CourseRepository;
 import pl.edu.pw.restapi.repository.UserRepository;
 
@@ -28,6 +33,12 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CourseServiceTest {
 
+    private final CourseCategoryMapper courseCategoryMapper = new CourseCategoryMapper();
+    private final CourseLessonMapper courseLessonMapper = new CourseLessonMapper();
+    private final CourseSectionMapper courseSectionMapper = new CourseSectionMapper(courseLessonMapper);
+
+    @Spy
+    private CourseMapper courseMapper = new CourseMapper(courseCategoryMapper, courseSectionMapper);
     @Mock
     private CourseRepository courseRepository;
     @Mock

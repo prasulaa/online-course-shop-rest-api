@@ -1,5 +1,7 @@
 package pl.edu.pw.restapi.dto.mapper;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.pw.restapi.domain.Course;
@@ -13,19 +15,21 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
+@Service
 public class CourseFileMapper {
 
-    public static List<CourseFileInfoDTO> map(List<CourseFile> courseFiles) {
+    public List<CourseFileInfoDTO> map(List<CourseFile> courseFiles) {
         if (courseFiles == null) {
             return null;
         } else {
             return courseFiles.stream()
-                    .map(CourseFileMapper::map)
+                    .map(this::map)
                     .collect(Collectors.toList());
         }
     }
 
-    public static CourseFileInfoDTO map(CourseFile courseFile) {
+    public CourseFileInfoDTO map(CourseFile courseFile) {
         if (courseFile == null) {
             return null;
         } else {
@@ -37,7 +41,7 @@ public class CourseFileMapper {
         }
     }
 
-    public static CourseFile map(MultipartFile courseFile, Course course) throws IOException {
+    public CourseFile map(MultipartFile courseFile, Course course) throws IOException {
         if (courseFile == null) {
             return null;
         } else {
@@ -50,7 +54,7 @@ public class CourseFileMapper {
         }
     }
 
-    public static CourseFileDTO mapDetails(CourseFile courseFile) {
+    public CourseFileDTO mapDetails(CourseFile courseFile) {
         if (courseFile == null) {
             return null;
         } else {

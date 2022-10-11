@@ -31,20 +31,21 @@ public class CourseServiceImpl implements CourseService {
     private final UserRepository userRepository;
     private final UserService userService;
     private CourseCategoryService courseCategoryService;
+    private final CourseMapper courseMapper;
 
     @Override
     public List<CourseDTO> getCourses(String title, List<Long> categories, List<Long> difficulties, Double priceMin,
                                       Double priceMax, Integer pageNumber, Integer pageSize, Sort.Direction sort) {
         Pageable pageable = getPageable(pageNumber, pageSize, sort);
         List<Course> courses = courseRepository.findAll(title, categories, difficulties, priceMin, priceMax, pageable);
-        return CourseMapper.map(courses);
+        return courseMapper.map(courses);
     }
 
     @Override
     public CourseDetailsDTO getCourseDetails(Long id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
-        return CourseMapper.mapDetails(course);
+        return courseMapper.mapDetails(course);
     }
 
     @Override
@@ -53,7 +54,7 @@ public class CourseServiceImpl implements CourseService {
 
         List<Course> courses = courseRepository.findBoughtCoursesByUserId(user.getId());
 
-        return CourseMapper.map(courses);
+        return courseMapper.map(courses);
     }
 
     @Override
@@ -62,7 +63,7 @@ public class CourseServiceImpl implements CourseService {
 
         List<Course> courses = courseRepository.findReleasedCoursesByUserId(user.getId());
 
-        return CourseMapper.map(courses);
+        return courseMapper.map(courses);
     }
 
     @Override
@@ -70,13 +71,13 @@ public class CourseServiceImpl implements CourseService {
         User user = (User) userService.loadUserByUsername(username);
 
         List<CourseCategory> categories = courseCategoryService.getCategories(course.getCategories());
-        Course mappedCourse = CourseMapper.map(course, categories);
+        Course mappedCourse = courseMapper.map(course, categories);
 
         user.getReleasedCourses().add(mappedCourse);
         courseRepository.save(mappedCourse);
         userRepository.save(user);
 
-        return CourseMapper.mapDetails(mappedCourse);
+        return courseMapper.mapDetails(mappedCourse);
     }
 
     @Override
@@ -89,7 +90,7 @@ public class CourseServiceImpl implements CourseService {
         updateCourse(course, courseToUpdate);
         courseRepository.save(courseToUpdate);
 
-        return CourseMapper.mapDetails(courseToUpdate);
+        return courseMapper.mapDetails(courseToUpdate);
     }
 
     @Override

@@ -24,6 +24,7 @@ public class CourseFileServiceImpl implements CourseFileService {
     private final CourseFileRepository courseFileRepository;
     private final CourseRepository courseRepository;
     private final UserService userService;
+    private final CourseFileMapper courseFileMapper;
 
     @Override
     public List<CourseFileInfoDTO> getCourseFiles(Long courseId, String username) {
@@ -35,7 +36,7 @@ public class CourseFileServiceImpl implements CourseFileService {
 
         List<CourseFile> courseFiles = courseFileRepository.findAllByCourseId(courseId);
 
-        return CourseFileMapper.map(courseFiles);
+        return courseFileMapper.map(courseFiles);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class CourseFileServiceImpl implements CourseFileService {
                 .findByIdAndCourseId(fileId, courseId)
                 .orElseThrow(() -> new EntityNotFoundException("File not found"));
 
-        return CourseFileMapper.mapDetails(courseFile);
+        return courseFileMapper.mapDetails(courseFile);
     }
 
     @Override
@@ -61,11 +62,11 @@ public class CourseFileServiceImpl implements CourseFileService {
                 .findReleasedCourseByCourseIdAndUserId(courseId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
-        CourseFile courseFileToSave = CourseFileMapper.map(courseFile, course);
+        CourseFile courseFileToSave = courseFileMapper.map(courseFile, course);
 
         courseFileRepository.save(courseFileToSave);
 
-        return CourseFileMapper.map(courseFileToSave);
+        return courseFileMapper.map(courseFileToSave);
     }
 
     @Override

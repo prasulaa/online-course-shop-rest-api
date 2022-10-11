@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,13 +13,12 @@ import pl.edu.pw.restapi.domain.CourseFile;
 import pl.edu.pw.restapi.domain.User;
 import pl.edu.pw.restapi.dto.CourseFileDTO;
 import pl.edu.pw.restapi.dto.CourseFileInfoDTO;
+import pl.edu.pw.restapi.dto.mapper.CourseFileMapper;
 import pl.edu.pw.restapi.repository.CourseFileRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +28,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class CourseFileServiceTest {
 
+    @Spy
+    private CourseFileMapper courseFileMapper;
     @Mock
     private CourseFileRepository courseFileRepository;
     @Mock

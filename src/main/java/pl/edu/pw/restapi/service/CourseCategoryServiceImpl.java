@@ -1,5 +1,6 @@
 package pl.edu.pw.restapi.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.CourseCategory;
 import pl.edu.pw.restapi.dto.CourseCategoryDTO;
@@ -11,18 +12,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class CourseCategoryServiceImpl implements CourseCategoryService {
 
     private final CourseCategoryRepository courseCategoryRepository;
-
-    public CourseCategoryServiceImpl(CourseCategoryRepository courseCategoryRepository) {
-        this.courseCategoryRepository = courseCategoryRepository;
-    }
+    private final CourseCategoryMapper courseCategoryMapper;
 
     @Override
     public List<CourseCategoryDTO> getCategories() {
         List<CourseCategory> categories = courseCategoryRepository.findAll();
-        return CourseCategoryMapper.map(categories);
+        return courseCategoryMapper.map(categories);
     }
 
     @Override
