@@ -608,6 +608,88 @@
 							"response": []
 						},
 						{
+							"name": "Get released courses",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/released",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"released"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get bought courses",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api-url}}/courses/bought",
+									"host": [
+										"{{api-url}}"
+									],
+									"path": [
+										"courses",
+										"bought"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "Edit course",
 							"event": [
 								{

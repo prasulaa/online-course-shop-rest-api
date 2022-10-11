@@ -48,6 +48,24 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public List<CourseDTO> getBoughtCourses(String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        List<Course> courses = courseRepository.findBoughtCoursesByUserId(user.getId());
+
+        return CourseMapper.map(courses);
+    }
+
+    @Override
+    public List<CourseDTO> getReleasedCourses(String username) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        List<Course> courses = courseRepository.findReleasedCoursesByUserId(user.getId());
+
+        return CourseMapper.map(courses);
+    }
+
+    @Override
     public CourseDetailsDTO createCourse(CreateCourseDTO course, String username) {
         User user = (User) userService.loadUserByUsername(username);
 

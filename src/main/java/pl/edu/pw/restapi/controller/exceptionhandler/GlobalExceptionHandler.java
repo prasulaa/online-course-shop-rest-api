@@ -1,6 +1,5 @@
 package pl.edu.pw.restapi.controller.exceptionhandler;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.convert.ConversionFailedException;

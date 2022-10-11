@@ -12,7 +12,6 @@ import pl.edu.pw.restapi.dto.CourseDTO;
 import pl.edu.pw.restapi.dto.CourseDetailsDTO;
 import pl.edu.pw.restapi.dto.CreateCourseDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseDTO;
-import pl.edu.pw.restapi.repository.CourseCategoryRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
 import pl.edu.pw.restapi.repository.UserRepository;
 
@@ -73,15 +72,6 @@ public class CourseServiceTest {
         assertEquals(0, actualCourses.size());
     }
 
-    private void assertEqualsCourse(Course expected, CourseDTO actual) {
-        assertAll(
-                () -> assertEquals(expected.getId(), actual.getId()),
-                () -> assertEquals(expected.getTitle(), actual.getTitle()),
-                () -> assertEquals(expected.getThumbnail(), actual.getThumbnail()),
-                () -> assertEquals(expected.getPrice(), actual.getPrice())
-        );
-    }
-
 
     // Tests for method getCourseDetails
 
@@ -117,6 +107,106 @@ public class CourseServiceTest {
                 () -> courseService.getCourseDetails(course.getId())
         );
         assertEquals("Course not found", exception.getMessage());
+    }
+
+
+    // Tests for method getBoughtCourses
+
+    @Test
+    public void shouldReturnBoughtCoursesWhenUserIsInRepository() {
+        Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
+        List<Course> boughtCourses = List.of(course);
+        User user = new User(1L, "username", "password", List.of(), boughtCourses);
+
+        when(userService.loadUserByUsername(user.getUsername()))
+                .thenReturn(user);
+        when(courseRepository.findBoughtCoursesByUserId(user.getId()))
+                .thenReturn(boughtCourses);
+
+        List<CourseDTO> actualCourses = courseService.getBoughtCourses(user.getUsername());
+
+        assertAll(
+                () -> assertEquals(1, actualCourses.size()),
+                () -> assertEqualsCourse(course, actualCourses.get(0))
+        );
+    }
+
+    @Test
+    public void shouldReturnEmptyListWhenUserDoesNotHaveBoughtCourses() {
+        List<Course> boughtCourses = List.of();
+        User user = new User(1L, "username", "password", List.of(), boughtCourses);
+
+        when(userService.loadUserByUsername(user.getUsername()))
+                .thenReturn(user);
+        when(courseRepository.findBoughtCoursesByUserId(user.getId()))
+                .thenReturn(boughtCourses);
+
+        List<CourseDTO> actualCourses = courseService.getBoughtCourses(user.getUsername());
+
+        assertEquals(0, actualCourses.size());
+    }
+
+    @Test
+    public void shouldThrowUsernameNotFoundExceptionWhenGettingBoughtCoursesAndUserDoesNotExist() {
+        User user = new User(1L, "username", "password", List.of(), List.of());
+
+        when(userService.loadUserByUsername(user.getUsername()))
+                .thenThrow(new UsernameNotFoundException(""));
+
+        assertThrows(
+                UsernameNotFoundException.class,
+                () -> courseService.getBoughtCourses(user.getUsername())
+        );
+    }
+
+
+    // Tests for method getReleasedCourses
+
+    @Test
+    public void shouldReturnReleasedCoursesWhenUserIsInRepository() {
+        Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
+        List<Course> releasedCourses = List.of(course);
+        User user = new User(1L, "username", "password", List.of(), releasedCourses);
+
+        when(userService.loadUserByUsername(user.getUsername()))
+                .thenReturn(user);
+        when(courseRepository.findReleasedCoursesByUserId(user.getId()))
+                .thenReturn(releasedCourses);
+
+        List<CourseDTO> actualCourses = courseService.getReleasedCourses(user.getUsername());
+
+        assertAll(
+                () -> assertEquals(1, actualCourses.size()),
+                () -> assertEqualsCourse(course, actualCourses.get(0))
+        );
+    }
+
+    @Test
+    public void shouldReturnEmptyListWhenUserDoesNotHaveReleasedCourses() {
+        List<Course> releasedCourses = List.of();
+        User user = new User(1L, "username", "password", List.of(), releasedCourses);
+
+        when(userService.loadUserByUsername(user.getUsername()))
+                .thenReturn(user);
+        when(courseRepository.findReleasedCoursesByUserId(user.getId()))
+                .thenReturn(releasedCourses);
+
+        List<CourseDTO> actualCourses = courseService.getReleasedCourses(user.getUsername());
+
+        assertEquals(0, actualCourses.size());
+    }
+
+    @Test
+    public void shouldThrowUsernameNotFoundExceptionWhenGettingReleasedCoursesAndUserDoesNotExist() {
+        User user = new User(1L, "username", "password", List.of(), List.of());
+
+        when(userService.loadUserByUsername(user.getUsername()))
+                .thenThrow(new UsernameNotFoundException(""));
+
+        assertThrows(
+                UsernameNotFoundException.class,
+                () -> courseService.getReleasedCourses(user.getUsername())
+        );
     }
 
 
@@ -307,6 +397,15 @@ public class CourseServiceTest {
                 () -> courseService.deleteCourse(course.getId(), user.getUsername())
         );
         assertEquals("Course not found", exception.getMessage());
+    }
+
+    private void assertEqualsCourse(Course expected, CourseDTO actual) {
+        assertAll(
+                () -> assertEquals(expected.getId(), actual.getId()),
+                () -> assertEquals(expected.getTitle(), actual.getTitle()),
+                () -> assertEquals(expected.getThumbnail(), actual.getThumbnail()),
+                () -> assertEquals(expected.getPrice(), actual.getPrice())
+        );
     }
 
 }

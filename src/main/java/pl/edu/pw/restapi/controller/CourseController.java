@@ -18,10 +18,6 @@ import java.util.List;
 @RequestMapping("/courses")
 public class CourseController {
 
-    //TODO logger and
-    // status 500 without msg and
-    // getCourseDetails without authorization
-
     private final CourseService courseService;
 
     public CourseController(CourseService courseService) {
@@ -45,6 +41,18 @@ public class CourseController {
     public ResponseEntity<CourseDetailsDTO> getCourseDetails(@PathVariable("id") Long id) {
         CourseDetailsDTO course = courseService.getCourseDetails(id);
         return ResponseEntity.ok(course);
+    }
+
+    @GetMapping("bought")
+    public ResponseEntity<List<CourseDTO>> getBoughtCourses(@AuthenticationPrincipal String username) {
+        List<CourseDTO> boughtCourses = courseService.getBoughtCourses(username);
+        return ResponseEntity.ok(boughtCourses);
+    }
+
+    @GetMapping("released")
+    public ResponseEntity<List<CourseDTO>> getReleasedCourses(@AuthenticationPrincipal String username) {
+        List<CourseDTO> releasedCourses = courseService.getReleasedCourses(username);
+        return ResponseEntity.ok(releasedCourses);
     }
 
     @PostMapping

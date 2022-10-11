@@ -15,6 +15,10 @@ public interface CourseService {
 
     CourseDetailsDTO getCourseDetails(Long id);
 
+    List<CourseDTO> getBoughtCourses(String username);
+
+    List<CourseDTO> getReleasedCourses(String username);
+
     CourseDetailsDTO createCourse(CreateCourseDTO course, String username);
 
     CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id, String username);

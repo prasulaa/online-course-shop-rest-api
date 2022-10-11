@@ -54,4 +54,18 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
                     "urc.user_id= :userId")
     Optional<Course> findReleasedCourseByCourseIdAndUserId(@Param("courseId") Long courseId,
                                                            @Param("userId") Long userId);
+
+    @Query(nativeQuery = true, value =
+            "select c.* from course c " +
+                    "join user_bought_courses ubc on " +
+                    "ubc.bought_courses_id = c.id and " +
+                    "ubc.user_id= :userId")
+    List<Course> findBoughtCoursesByUserId(Long userId);
+
+    @Query(nativeQuery = true, value =
+            "select c.* from course c " +
+                    "join user_released_courses urc on " +
+                    "urc.released_courses_id = c.id and " +
+                    "urc.user_id= :userId")
+    List<Course> findReleasedCoursesByUserId(Long userId);
 }
