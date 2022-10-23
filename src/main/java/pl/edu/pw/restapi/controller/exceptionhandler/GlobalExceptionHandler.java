@@ -6,6 +6,7 @@ import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -83,6 +84,14 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
 
         return new ResponseEntity<>(new ExceptionDTO(status), status);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDTO> handle(HttpMediaTypeNotSupportedException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String msg = e.getMessage();
+
+        return new ResponseEntity<>(new ExceptionDTO(status, msg), status);
     }
 
     @ExceptionHandler
