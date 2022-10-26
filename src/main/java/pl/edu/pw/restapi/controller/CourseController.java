@@ -26,13 +26,14 @@ public class CourseController {
 
     @GetMapping
     public ResponseEntity<List<CourseDTO>> getCourses(@RequestParam(value = "title", required = false) String title,
-                                        @RequestParam(value = "category", required = false) List<Long> categories,
-                                        @RequestParam(value = "difficulty", required = false) List<Long> difficulties,
-                                        @RequestParam(value = "priceMin", required = false) Double priceMin,
-                                        @RequestParam(value = "priceMax", required = false) Double priceMax,
-                                        @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                                        @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                        @RequestParam(value = "sort", required = false) Sort.Direction sort) {
+                                                      @RequestParam(value = "category", required = false) List<Long> categories,
+                                                      @RequestParam(value = "difficulty", required = false) List<Long> difficulties,
+                                                      @RequestParam(value = "priceMin", required = false) Double priceMin,
+                                                      @RequestParam(value = "priceMax", required = false) Double priceMax,
+                                                      @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                                      @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                                                      @RequestParam(value = "sort", required = false) Sort.Direction sort,
+                                                      @CookieValue(value = "token", defaultValue = "test123") String token) {
         List<CourseDTO> courses = courseService.getCourses(title, categories, difficulties, priceMin, priceMax, pageNumber, pageSize, sort);
         return ResponseEntity.ok(courses);
     }
