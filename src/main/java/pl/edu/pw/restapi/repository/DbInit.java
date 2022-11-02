@@ -10,6 +10,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -56,12 +57,14 @@ public class DbInit implements CommandLineRunner {
         List<CourseCategory> javaCategories = new ArrayList<>();
         javaCategories.add(categoryProgrammingJava);
         List<String> javaScopes = new ArrayList<>();
-        javaScopes.add("Scope java 1");
-        javaScopes.add("Scope java 2");
-        javaScopes.add("Scope java 3");
+        javaScopes.add("Scope java 1 Scope java 1 Scope java 1 Scope java 1 Scope java 1 Scope java 1 Scope java 1 Scope java 1");
+        javaScopes.add("Scope java 2 Scope java 2 Scope java 2 Scope java 2 Scope java 2 Scope java 2 Scope java 2 Scope java 2");
+        javaScopes.add("Scope java 3 Scope java 3 Scope java 3 Scope java 3 Scope java 3 Scope java 3 Scope java 3 Scope java 3");
+
+        String lesson = Files.readString(Path.of("src/main/resources/initdata/text.md"));
 
         List<CourseLesson> javaLessons1 = new ArrayList<>();
-        javaLessons1.add(new CourseLesson("1-1", "Data java 1"));
+        javaLessons1.add(new CourseLesson("1-1", lesson));
         javaLessons1.add(new CourseLesson("1-2", "Data java 2"));
 
         List<CourseLesson> javaLessons2 = new ArrayList<>();
@@ -72,16 +75,18 @@ public class DbInit implements CommandLineRunner {
         javaSections.add(new CourseSection("Section 1", javaLessons1));
         javaSections.add(new CourseSection("Section 2", javaLessons2));
 
+        byte[] thumbnail = Files.readAllBytes(Path.of("src/main/resources/initdata/frog.jpg"));
+
         Course javaCourse = new Course(
-                1L,
+                null,
                 "Java",
                 15.0,
                 javaCategories,
                 CourseDifficulty.EASY,
                 javaScopes,
-                "Java description",
+                "Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description Java description",
                 javaSections,
-                "base64 thumbnail");
+                thumbnail);
 
         courseRepository.save(javaCourse);
 
@@ -106,7 +111,7 @@ public class DbInit implements CommandLineRunner {
         guitarSections.add(new CourseSection("Section 2", guitarLessons2));
 
         Course guitarCourse = new Course(
-                2L,
+                null,
                 "Guitar",
                 0.0,
                 guitarCategories,
@@ -114,7 +119,7 @@ public class DbInit implements CommandLineRunner {
                 guitarScopes,
                 "Guitar description",
                 guitarSections,
-                "base64 thumbnail");
+                thumbnail);
 
         courseRepository.save(guitarCourse);
 
@@ -128,6 +133,20 @@ public class DbInit implements CommandLineRunner {
         CourseFile file1 = new CourseFile(null, "file1.jpg", "jpg", Files.readAllBytes(Path.of("src/main/resources/initdata/frog.jpg")), javaCourse);
         CourseFile file2 = new CourseFile(null, "file2.mp4", "mp4", Files.readAllBytes(Path.of("src/main/resources/initdata/earth.mp4")), javaCourse);
         courseFileRepository.saveAll(List.of(file1, file2));
+
+
+        for (int i = 0; i < 10; i++) {
+            courseRepository.save(new Course(
+                    null,
+                    "Guitar " + i + " hero programming for dummies",
+                    0.0,
+                    guitarCategories,
+                    CourseDifficulty.MEDIUM,
+                    guitarScopes,
+                    "Guitar description",
+                    null,
+                    thumbnail));
+        }
     }
 
 }

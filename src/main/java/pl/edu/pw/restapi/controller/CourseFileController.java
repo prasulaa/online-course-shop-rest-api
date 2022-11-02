@@ -1,6 +1,8 @@
 package pl.edu.pw.restapi.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +31,12 @@ public class CourseFileController {
     }
 
     @GetMapping("{fileId}")
-    public ResponseEntity<byte[]> getCourseFile(@PathVariable("courseId") Long courseId,
-                                           @PathVariable("fileId") Long fileId,
-                                           @AuthenticationPrincipal String username) {
+    public ResponseEntity<Resource> getCourseFile(@PathVariable("courseId") Long courseId,
+                                                  @PathVariable("fileId") Long fileId,
+                                                  @AuthenticationPrincipal String username) {
         username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
         CourseFileDTO file = courseFileService.getCourseFile(courseId, fileId, username);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
-                .body(file.getData());
+        return ResponseEntity.ok(new ByteArrayResource(file.getData()));
     }
 
     @PostMapping
