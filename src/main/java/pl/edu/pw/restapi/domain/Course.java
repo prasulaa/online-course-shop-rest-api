@@ -24,9 +24,11 @@ public class Course {
     private CourseDifficulty difficulty;
     @ElementCollection
     private List<String> scopes;
+    @Lob
     private String description;
     @OneToMany(cascade = CascadeType.ALL)
     private List<CourseSection> sections;
+    @Lob
     private String thumbnail;
 
 }

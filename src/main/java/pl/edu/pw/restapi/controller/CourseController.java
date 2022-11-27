@@ -32,8 +32,7 @@ public class CourseController {
                                                       @RequestParam(value = "priceMax", required = false) Double priceMax,
                                                       @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                                       @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                                      @RequestParam(value = "sort", required = false) Sort.Direction sort,
-                                                      @CookieValue(value = "token", defaultValue = "test123") String token) {
+                                                      @RequestParam(value = "sort", required = false) Sort.Direction sort) {
         List<CourseDTO> courses = courseService.getCourses(title, categories, difficulties, priceMin, priceMax, pageNumber, pageSize, sort);
         return ResponseEntity.ok(courses);
     }
@@ -65,15 +64,15 @@ public class CourseController {
 
     @PutMapping("{id}")
     public ResponseEntity<CourseDetailsDTO> updateCourse(@RequestBody @Valid UpdateCourseDTO course,
-                                          @PathVariable("id") Long id,
-                                          @AuthenticationPrincipal String username) {
+                                                         @PathVariable("id") Long id,
+                                                         @AuthenticationPrincipal String username) {
         CourseDetailsDTO returnDetails = courseService.updateCourse(course, id, username);
         return ResponseEntity.ok(returnDetails);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable("id") Long id,
-                                          @AuthenticationPrincipal String username) {
+                                             @AuthenticationPrincipal String username) {
         courseService.deleteCourse(id, username);
         return ResponseEntity.noContent().build();
     }

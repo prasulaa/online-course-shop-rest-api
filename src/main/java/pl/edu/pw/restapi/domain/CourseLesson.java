@@ -17,6 +17,7 @@ public class CourseLesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Lob
     private String data;
 
     public CourseLesson(String name, String data) {

@@ -9,6 +9,7 @@ import pl.edu.pw.restapi.domain.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -75,7 +76,7 @@ public class DbInit implements CommandLineRunner {
         javaSections.add(new CourseSection("Section 1", javaLessons1));
         javaSections.add(new CourseSection("Section 2", javaLessons2));
 
-        byte[] thumbnail = Files.readAllBytes(Path.of("src/main/resources/initdata/frog.jpg"));
+        String thumbnail = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(Files.readAllBytes(Path.of("src/main/resources/initdata/frog.jpg")));
 
         Course javaCourse = new Course(
                 null,
