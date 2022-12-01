@@ -1,6 +1,9 @@
 package pl.edu.pw.restapi.service;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,17 +19,15 @@ import pl.edu.pw.restapi.service.payu.PayuConnector;
 import pl.edu.pw.restapi.service.payu.PayuRequest;
 import pl.edu.pw.restapi.service.payu.PayuResponse;
 import pl.edu.pw.restapi.service.updater.CourseUpdater;
-import pl.edu.pw.restapi.repository.CourseCategoryRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
@@ -131,6 +132,27 @@ public class CourseServiceImpl implements CourseService {
         PayuResponse response = payuConnector.createOrder(request);
 
         return buyCourseMapper.map(response);
+    }
+
+    @Override
+    public void boughtCourse(Long courseId, String username, PayuNotificationDTO notification) {
+        try {
+            String status = notification.getOrder().getStatus();
+            if (status.equals("COMPLETED")) {
+                User user = (User) userService.loadUserByUsername(username);
+
+                if (courseRepository.findByCourseIdAndUserId(courseId, user.getId()).isPresent()) {
+                    return;
+                }
+
+                Course course = courseRepository.findById(courseId)
+                        .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+
+                addCourseToBoughtCourses(user, course);
+            }
+        } catch (Exception e) {
+            log.error("Cannot add course " + courseId + " to " + username + " bought courses", e);
+        }
     }
 
     private void addCourseToBoughtCourses(User user, Course course) {

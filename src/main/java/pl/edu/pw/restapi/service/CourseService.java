@@ -23,4 +23,7 @@ public interface CourseService {
     void deleteCourse(Long id, String username);
 
     BuyCourseResponseDTO buyCourse(Long id, String username, String ip);
+
+    void boughtCourse(Long courseId, String username, PayuNotificationDTO notification);
+
 }
