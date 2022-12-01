@@ -34,7 +34,6 @@ public class CourseFileController {
     public ResponseEntity<Resource> getCourseFile(@PathVariable("courseId") Long courseId,
                                                   @PathVariable("fileId") Long fileId,
                                                   @AuthenticationPrincipal String username) {
-        username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
         CourseFileDTO file = courseFileService.getCourseFile(courseId, fileId, username);
         return ResponseEntity.ok(new ByteArrayResource(file.getData()));
     }
@@ -43,7 +42,6 @@ public class CourseFileController {
     public ResponseEntity<CourseFileInfoDTO> uploadCourseFile(@PathVariable("courseId") Long courseId,
                                               @RequestParam("file") MultipartFile file,
                                               @AuthenticationPrincipal String username) throws IOException {
-        username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
         CourseFileInfoDTO fileInfo = courseFileService.createCourseFile(courseId, file, username);
         return new ResponseEntity<>(fileInfo, HttpStatus.CREATED);
     }
@@ -52,7 +50,6 @@ public class CourseFileController {
     public ResponseEntity<Void> deleteCourseFile(@PathVariable("courseId") Long courseId,
                                               @PathVariable("fileId") Long fileId,
                                               @AuthenticationPrincipal String username) {
-        username = username.equals("anonymousUser") ? "string" : username; // TODO delete this
         courseFileService.deleteCourseFile(courseId, fileId, username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

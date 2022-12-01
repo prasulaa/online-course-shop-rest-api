@@ -8,12 +8,13 @@ import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseCategory;
 import pl.edu.pw.restapi.domain.User;
-import pl.edu.pw.restapi.dto.CourseDTO;
-import pl.edu.pw.restapi.dto.CourseDetailsDTO;
-import pl.edu.pw.restapi.dto.CreateCourseDTO;
-import pl.edu.pw.restapi.dto.UpdateCourseDTO;
+import pl.edu.pw.restapi.dto.*;
+import pl.edu.pw.restapi.dto.mapper.BuyCourseMapper;
 import pl.edu.pw.restapi.dto.mapper.CourseMapper;
 import pl.edu.pw.restapi.repository.UserRepository;
+import pl.edu.pw.restapi.service.payu.PayuConnector;
+import pl.edu.pw.restapi.service.payu.PayuRequest;
+import pl.edu.pw.restapi.service.payu.PayuResponse;
 import pl.edu.pw.restapi.service.updater.CourseUpdater;
 import pl.edu.pw.restapi.repository.CourseCategoryRepository;
 import pl.edu.pw.restapi.repository.CourseRepository;
@@ -21,6 +22,7 @@ import pl.edu.pw.restapi.repository.CourseRepository;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,8 +32,10 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
     private final UserService userService;
-    private CourseCategoryService courseCategoryService;
+    private final CourseCategoryService courseCategoryService;
     private final CourseMapper courseMapper;
+    private final BuyCourseMapper buyCourseMapper;
+    private final PayuConnector payuConnector;
 
     @Override
     public List<CourseDTO> getCourses(String title, List<Long> categories, List<Long> difficulties, Double priceMin,
@@ -104,6 +108,34 @@ public class CourseServiceImpl implements CourseService {
         user.getReleasedCourses().remove(courseToDelete);
         userRepository.save(user);
         courseRepository.delete(courseToDelete);
+    }
+
+    @Override
+    public BuyCourseResponseDTO buyCourse(Long id, String username, String ip) {
+        User user = (User) userService.loadUserByUsername(username);
+
+        courseRepository.findByCourseIdAndUserId(id, user.getId())
+                .ifPresent((course) -> {
+                    throw new IllegalArgumentException("User already have course");
+                });
+
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found"));
+
+        if (course.getPrice() == 0) {
+            addCourseToBoughtCourses(user, course);
+            return null;
+        }
+
+        PayuRequest request = payuConnector.createRequest(username, course, ip);
+        PayuResponse response = payuConnector.createOrder(request);
+
+        return buyCourseMapper.map(response);
+    }
+
+    private void addCourseToBoughtCourses(User user, Course course) {
+        user.getBoughtCourses().add(course);
+        userRepository.save(user);
     }
 
     private void updateCourse(UpdateCourseDTO course, Course courseToUpdate) {

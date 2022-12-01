@@ -5,12 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.pw.restapi.dto.CourseDTO;
-import pl.edu.pw.restapi.dto.CourseDetailsDTO;
-import pl.edu.pw.restapi.dto.CreateCourseDTO;
-import pl.edu.pw.restapi.dto.UpdateCourseDTO;
+import pl.edu.pw.restapi.dto.*;
 import pl.edu.pw.restapi.service.CourseService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -76,5 +74,18 @@ public class CourseController {
         courseService.deleteCourse(id, username);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("{id}/buy")
+    public ResponseEntity<BuyCourseResponseDTO> buyCourse(@PathVariable("id") Long id,
+                                                          @AuthenticationPrincipal String username,
+                                                          HttpServletRequest request) {
+        BuyCourseResponseDTO response = courseService.buyCourse(id, username, request.getRemoteAddr());
+
+        if (response == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(response);
+    }
+
 
 }
