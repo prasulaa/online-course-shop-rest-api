@@ -2,17 +2,23 @@ package pl.edu.pw.restapi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.passay.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.User;
 import pl.edu.pw.restapi.dto.RegisterCredentialsDTO;
 import pl.edu.pw.restapi.repository.UserRepository;
+import pl.edu.pw.restapi.security.authentication.JwtService;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -21,6 +27,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -69,4 +76,5 @@ public class UserServiceImpl implements UserService {
                 new AlphabeticalCharacterRule(1)
         ));
     }
+
 }

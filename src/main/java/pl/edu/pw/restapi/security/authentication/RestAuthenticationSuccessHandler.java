@@ -13,36 +13,42 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 @Component
 public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final long expirationTime;
-    private final String secret;
+    private final JwtService jwtService;
 
     public RestAuthenticationSuccessHandler(@Value("${jwt.expirationTime}") long expirationTime,
-                                            @Value("${jwt.secret}") String secret) {
+                                            JwtService jwtService) {
         this.expirationTime = expirationTime;
-        this.secret = secret;
+        this.jwtService = jwtService;
     }
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
-        String token = JWT.create()
-                .withSubject(principal.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
-                .sign(Algorithm.HMAC256(secret));
+        String token = jwtService.createToken(principal.getUsername());
         response.getOutputStream().print("{\"token\": \"" + token + "\"}");
         response.addCookie(authCookie(token));
+        response.addCookie(infoCookie());
     }
 
     private Cookie authCookie(String token) {
         Cookie cookie = new Cookie("Authorization", token);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
-        cookie.setMaxAge((int) expirationTime);
+        cookie.setMaxAge((int) expirationTime / 1000);
         return cookie;
     }
+
+    private Cookie infoCookie() {
+        Cookie cookie = new Cookie("AuthInfo", "");
+        cookie.setPath("/");
+        cookie.setMaxAge((int) expirationTime / 1000);
+        return cookie;
+    }
+
 }

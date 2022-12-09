@@ -11,7 +11,6 @@ import pl.edu.pw.restapi.dto.LoginCredentialsDTO;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 
 @RequiredArgsConstructor

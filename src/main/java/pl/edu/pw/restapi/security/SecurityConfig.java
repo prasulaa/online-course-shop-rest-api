@@ -15,12 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import pl.edu.pw.restapi.security.authentication.JsonObjectAuthenticationFilter;
-import pl.edu.pw.restapi.security.authentication.JwtAuthorizationFilter;
-import pl.edu.pw.restapi.security.authentication.RestAuthenticationFailureHandler;
-import pl.edu.pw.restapi.security.authentication.RestAuthenticationSuccessHandler;
+import pl.edu.pw.restapi.security.authentication.*;
 import pl.edu.pw.restapi.service.UserService;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 @Configuration
@@ -31,20 +29,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final RestAuthenticationFailureHandler failureHandler;
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final DataSource dataSource;
-    private final String secret;
     private final UserService userService;
+    private final JwtService jwtService;
+    private final JwtLogoutHandler jwtLogoutHandler;
 
     public SecurityConfig(ObjectMapper objectMapper, RestAuthenticationSuccessHandler successHandler,
                           RestAuthenticationFailureHandler failureHandler, DataSource dataSource,
-                          @Value("${jwt.secret}") String secret, UserService userService,
-                          AuthenticationEntryPoint authenticationEntryPoint) {
+                          UserService userService, JwtService jwtService,
+                          AuthenticationEntryPoint authenticationEntryPoint,
+                          JwtLogoutHandler jwtLogoutHandler) {
         this.objectMapper = objectMapper;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
         this.dataSource = dataSource;
-        this.secret = secret;
         this.userService = userService;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.jwtService = jwtService;
+        this.jwtLogoutHandler = jwtLogoutHandler;
     }
 
     @Override
@@ -59,27 +60,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/v2/api-docs").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/swagger-ui/**").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/register").permitAll()
-                .antMatchers(HttpMethod.GET, "/courses").permitAll()
-                .antMatchers(HttpMethod.GET, "/courses/*/details").permitAll()
-                .antMatchers(HttpMethod.POST, "/courses/payment-notification").permitAll()
-                .antMatchers("/categories").permitAll()
-                .anyRequest().authenticated()
+                    .antMatchers("/v2/api-docs").permitAll()
+                    .antMatchers("/webjars/**").permitAll()
+                    .antMatchers("/swagger-resources/**").permitAll()
+                    .antMatchers("/swagger-ui/**").permitAll()
+                    .antMatchers("/h2-console/**").permitAll()
+                    .antMatchers("/login").permitAll()
+                    .antMatchers("/register").permitAll()
+                    .antMatchers(HttpMethod.GET, "/courses").permitAll()
+                    .antMatchers(HttpMethod.GET, "/courses/*/details").permitAll()
+                    .antMatchers(HttpMethod.POST, "/courses/payment-notification").permitAll()
+                    .antMatchers("/categories").permitAll()
+                    .anyRequest().authenticated()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .logout()
+                    .logoutUrl("/logout")
+                    .addLogoutHandler(jwtLogoutHandler)
+                    .logoutSuccessHandler(jwtLogoutHandler)
                 .and()
-                .addFilter(authenticationFilter())
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userService, secret))
-                .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint)
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .headers().frameOptions().disable();
+                    .addFilter(authenticationFilter())
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtService, userService))
+                    .exceptionHandling()
+                    .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                    .headers().frameOptions().disable();
     }
 
     public JsonObjectAuthenticationFilter authenticationFilter() throws Exception {
