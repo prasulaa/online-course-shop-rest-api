@@ -76,7 +76,7 @@ public class DbInit implements CommandLineRunner {
         javaSections.add(new CourseSection("Section 1", javaLessons1));
         javaSections.add(new CourseSection("Section 2", javaLessons2));
 
-        String thumbnail = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(Files.readAllBytes(Path.of("src/main/resources/initdata/frog.jpg")));
+        String thumbnail = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(Files.readAllBytes(Path.of("src/main/resources/initdata/thumbnail.png")));
 
         Course javaCourse = new Course(
                 null,
@@ -113,7 +113,7 @@ public class DbInit implements CommandLineRunner {
 
         Course guitarCourse = new Course(
                 null,
-                "Guitar",
+                "Guitar course",
                 0.0,
                 guitarCategories,
                 CourseDifficulty.MEDIUM,
@@ -127,8 +127,8 @@ public class DbInit implements CommandLineRunner {
         User user = new User();
         user.setUsername("string");
         user.setPassword(passwordEncoder.encode("string"));
-        user.setBoughtCourses(List.of(javaCourse));
-        user.setReleasedCourses(List.of(guitarCourse));
+        user.setBoughtCourses(List.of(guitarCourse));
+        user.setReleasedCourses(List.of(javaCourse));
         userRepository.save(user);
 
         CourseFile file1 = new CourseFile(null, "file1.jpg", "jpg", Files.readAllBytes(Path.of("src/main/resources/initdata/frog.jpg")), javaCourse);
@@ -139,7 +139,7 @@ public class DbInit implements CommandLineRunner {
         for (int i = 0; i < 10; i++) {
             courseRepository.save(new Course(
                     null,
-                    "Guitar " + i + " hero programming for dummies",
+                    "Guitar " + i + " course",
                     0.0,
                     guitarCategories,
                     CourseDifficulty.MEDIUM,

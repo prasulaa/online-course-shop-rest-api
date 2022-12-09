@@ -1,12 +1,3 @@
----
-__Advertisement :)__
-
-- __[pica](https://nodeca.github.io/pica/demo/)__ - high quality and fast image
-  resize in browser.
-- __[babelfish](https://github.com/nodeca/babelfish/)__ - developer friendly
-  i18n with plurals support and easy syntax.
-
-You will like those projects!
 
 ---
 
@@ -16,6 +7,8 @@ You will like those projects!
 #### h4 Heading
 ##### h5 Heading
 ###### h6 Heading
+
+---
 
 
 ## Horizontal Rules
@@ -152,8 +145,6 @@ Autoconverted link https://github.com/nodeca/pica (enable linkify to see)
 <video width="320" height="240" controls>
   <source src="/courses/1/files/2" type="video/mp4">
 </video>
-
-<script>console.log('Wyruchany')</script>
 
 
 Like links, Images also have a footnote style syntax
