@@ -12,9 +12,11 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -28,6 +30,12 @@ public class UserController {
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterCredentialsDTO credentials) {
         userService.registerUser(credentials);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/resetpassword")
+    public ResponseEntity<Void> resetPassword(@RequestParam("email") String email) {
+        userService.resetPassword(email);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

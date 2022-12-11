@@ -1,6 +1,7 @@
 package pl.edu.pw.restapi.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.passay.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import pl.edu.pw.restapi.service.UserService;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.util.List;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -65,8 +67,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/swagger-resources/**").permitAll()
                     .antMatchers("/swagger-ui/**").permitAll()
                     .antMatchers("/h2-console/**").permitAll()
-                    .antMatchers("/login").permitAll()
-                    .antMatchers("/register").permitAll()
+                    .antMatchers(HttpMethod.POST, "/user/login").permitAll()
+                    .antMatchers(HttpMethod.POST, "/user/register").permitAll()
+                    .antMatchers(HttpMethod.POST, "/user/resetpassword").permitAll()
                     .antMatchers(HttpMethod.GET, "/courses").permitAll()
                     .antMatchers(HttpMethod.GET, "/courses/*/details").permitAll()
                     .antMatchers(HttpMethod.POST, "/courses/payment-notification").permitAll()
@@ -74,7 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated()
                 .and()
                     .logout()
-                    .logoutUrl("/logout")
+                    .logoutUrl("/user/logout")
                     .addLogoutHandler(jwtLogoutHandler)
                     .logoutSuccessHandler(jwtLogoutHandler)
                 .and()
@@ -99,5 +102,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public static List<Rule> passwordRules() {
+        return List.of(
+                new LengthRule(6, 20),
+                new UppercaseCharacterRule(1),
+                new DigitCharacterRule(1),
+                new AlphabeticalCharacterRule(1)
+        );
     }
 }

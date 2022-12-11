@@ -1,6 +1,9 @@
 package pl.edu.pw.restapi.service;
 
 import lombok.RequiredArgsConstructor;
+import org.passay.CharacterRule;
+import org.passay.PasswordGenerator;
+import org.passay.Rule;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,9 +12,11 @@ import pl.edu.pw.restapi.domain.User;
 import pl.edu.pw.restapi.dto.RegisterCredentialsDTO;
 import pl.edu.pw.restapi.repository.UserRepository;
 import pl.edu.pw.restapi.service.email.EmailNotificationService;
-import pl.edu.pw.restapi.service.validator.RegisterCredentialsValidator;
+import pl.edu.pw.restapi.service.validator.UserCredentialsValidator;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -20,8 +25,9 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RegisterCredentialsValidator registerCredentialsValidator;
+    private final UserCredentialsValidator userCredentialsValidator;
     private final EmailNotificationService notificationService;
+    private final List<Rule> passwordRules;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -31,12 +37,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(RegisterCredentialsDTO credentials) {
+
+        userCredentialsValidator.validate(credentials);
         checkIfUsernameIsTaken(credentials.getUsername());
-        registerCredentialsValidator.validate(credentials);
+        //TODO check if email is taken
 
         User user = mapToUser(credentials);
         userRepository.save(user);
         notificationService.sendRegistrationNotification(user);
+    }
+
+    @Override
+    public void resetPassword(String email) {
+        userCredentialsValidator.validateEmail(email);
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        if (user == null) {
+            return;
+        }
+
+        String password = generatePassword();
+
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        notificationService.sendResetPasswordNotification(user, password);
+    }
+
+    private String generatePassword() {
+        PasswordGenerator generator = new PasswordGenerator();
+        List<CharacterRule> rules = passwordRules.stream()
+                .filter((rule) -> rule instanceof CharacterRule)
+                .map((rule) -> (CharacterRule) rule)
+                .toList();
+
+        return generator.generatePassword(8, rules);
     }
 
     private User mapToUser(RegisterCredentialsDTO credentials) {

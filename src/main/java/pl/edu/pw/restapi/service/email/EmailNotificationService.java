@@ -69,4 +69,16 @@ public class EmailNotificationService {
         }
     }
 
+    public void sendResetPasswordNotification(User user, String newPassword) {
+        String subject = "Course shop - password reset";
+        String content = "Hi " + user.getUsername() + ",\n" +
+                "Your new password: " + newPassword;
+
+        try {
+            emailService.sendEmail(user.getEmail(), subject, content);
+        } catch (MessagingException e) {
+            log.error("Could not send password reset notification to " + user.getEmail(), e);
+        }
+    }
+
 }
