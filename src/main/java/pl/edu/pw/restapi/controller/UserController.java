@@ -3,7 +3,9 @@ package pl.edu.pw.restapi.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import pl.edu.pw.restapi.dto.ChangePasswordDTO;
 import pl.edu.pw.restapi.dto.LoginCredentialsDTO;
 import pl.edu.pw.restapi.dto.RegisterCredentialsDTO;
 import pl.edu.pw.restapi.service.UserService;
@@ -16,7 +18,6 @@ import javax.validation.constraints.NotEmpty;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -32,9 +33,16 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/resetpassword")
+    @PostMapping("/user/password/reset")
     public ResponseEntity<Void> resetPassword(@RequestParam("email") String email) {
         userService.resetPassword(email);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/user/password/change")
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal String username,
+                                               @RequestBody @Valid ChangePasswordDTO changePassword) {
+        userService.changePassword(username, changePassword);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

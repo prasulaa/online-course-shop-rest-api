@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.User;
+import pl.edu.pw.restapi.dto.ChangePasswordDTO;
 import pl.edu.pw.restapi.dto.RegisterCredentialsDTO;
 import pl.edu.pw.restapi.repository.UserRepository;
 import pl.edu.pw.restapi.service.email.EmailNotificationService;
@@ -37,7 +38,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(RegisterCredentialsDTO credentials) {
-
         userCredentialsValidator.validate(credentials);
         checkIfUsernameIsTaken(credentials.getUsername());
         //TODO check if email is taken
@@ -61,6 +61,19 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
         notificationService.sendResetPasswordNotification(user, password);
+    }
+
+    @Override
+    public void changePassword(String username, ChangePasswordDTO changePassword) {
+        userCredentialsValidator.validatePasswords(changePassword.getNewPassword(), changePassword.getNewPasswordRepeat());
+        User user = (User) loadUserByUsername(username);
+
+        if (!passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Wrong password");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePassword.getNewPassword()));
+        userRepository.save(user);
     }
 
     private String generatePassword() {
