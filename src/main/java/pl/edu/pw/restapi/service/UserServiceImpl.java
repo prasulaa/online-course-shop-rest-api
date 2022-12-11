@@ -1,24 +1,17 @@
 package pl.edu.pw.restapi.service;
 
 import lombok.RequiredArgsConstructor;
-import org.passay.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.User;
 import pl.edu.pw.restapi.dto.RegisterCredentialsDTO;
 import pl.edu.pw.restapi.repository.UserRepository;
-import pl.edu.pw.restapi.security.authentication.JwtService;
+import pl.edu.pw.restapi.service.email.EmailNotificationService;
+import pl.edu.pw.restapi.service.validator.RegisterCredentialsValidator;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 
 @Service
@@ -27,7 +20,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final RegisterCredentialsValidator registerCredentialsValidator;
+    private final EmailNotificationService notificationService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -38,13 +32,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(RegisterCredentialsDTO credentials) {
         checkIfUsernameIsTaken(credentials.getUsername());
-        validatePasswords(credentials.getPassword(), credentials.getPasswordRepeat());
+        registerCredentialsValidator.validate(credentials);
 
-        userRepository.save(User.builder()
-            .username(credentials.getUsername())
-            .password(passwordEncoder.encode(credentials.getPassword()))
-            .build()
-        );
+        User user = mapToUser(credentials);
+        userRepository.save(user);
+        notificationService.sendRegistrationNotification(user);
+    }
+
+    private User mapToUser(RegisterCredentialsDTO credentials) {
+        return User.builder()
+                .username(credentials.getUsername())
+                .password(passwordEncoder.encode(credentials.getPassword()))
+                .email(credentials.getEmail())
+                .build();
     }
 
     private void checkIfUsernameIsTaken(String username) {
@@ -53,28 +53,6 @@ public class UserServiceImpl implements UserService {
         if (userSameUsername.isPresent()) {
             throw new IllegalArgumentException("Username is already taken");
         }
-    }
-
-    private void validatePasswords(String password, String passwordRepeat) {
-        if (password.equals(passwordRepeat)) {
-            PasswordValidator validator = passwordValidator();
-            PasswordData passwordData = new PasswordData(password);
-            RuleResult result = validator.validate(passwordData);
-            if(!result.isValid()) {
-                throw new IllegalArgumentException(validator.getMessages(result).toString());
-            }
-        } else {
-            throw new IllegalArgumentException("Passwords are not equal");
-        }
-    }
-
-    private PasswordValidator passwordValidator() {
-        return new PasswordValidator(List.of(
-                new LengthRule(6, 20),
-                new UppercaseCharacterRule(1),
-                new DigitCharacterRule(1),
-                new AlphabeticalCharacterRule(1)
-        ));
     }
 
 }

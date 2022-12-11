@@ -1,4 +1,4 @@
-package pl.edu.pw.restapi.service.payu;
+package pl.edu.pw.restapi.service.payu.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +17,6 @@ public class PayuRequest {
     private String description;
     private String currencyCode;
     private String totalAmount;
-    private List<PayuProductRequest> products;
+    private List<PayuProduct> products;
 
 }

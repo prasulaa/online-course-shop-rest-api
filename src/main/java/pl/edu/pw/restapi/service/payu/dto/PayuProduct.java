@@ -1,11 +1,11 @@
-package pl.edu.pw.restapi.service.payu;
+package pl.edu.pw.restapi.service.payu.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
-public class PayuProductRequest {
+public class PayuProduct {
 
     private String name;
     private String unitPrice;

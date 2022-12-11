@@ -2,7 +2,7 @@ package pl.edu.pw.restapi.dto.mapper;
 
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.dto.BuyCourseResponseDTO;
-import pl.edu.pw.restapi.service.payu.PayuResponse;
+import pl.edu.pw.restapi.service.payu.dto.PayuResponse;
 
 @Service
 public class BuyCourseMapper {

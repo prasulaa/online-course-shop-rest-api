@@ -2,6 +2,7 @@ package pl.edu.pw.restapi.service;
 
 import org.springframework.data.domain.Sort;
 import pl.edu.pw.restapi.dto.*;
+import pl.edu.pw.restapi.service.payu.dto.PayuNotification;
 
 import java.util.List;
 
@@ -24,6 +25,6 @@ public interface CourseService {
 
     BuyCourseResponseDTO buyCourse(Long id, String username, String ip);
 
-    void boughtCourse(Long courseId, String username, PayuNotificationDTO notification);
+    void boughtCourse(Long courseId, String username, PayuNotification notification);
 
 }

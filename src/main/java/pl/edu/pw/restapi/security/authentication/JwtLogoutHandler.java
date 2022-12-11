@@ -40,11 +40,16 @@ public class JwtLogoutHandler implements LogoutHandler, LogoutSuccessHandler {
     }
 
     private String getToken(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+
         for (Cookie cookie: request.getCookies()) {
             if (cookie.getName().equals("Authorization")) {
                 return cookie.getValue();
             }
         }
+
         return request.getHeader("Authorization");
     }
 

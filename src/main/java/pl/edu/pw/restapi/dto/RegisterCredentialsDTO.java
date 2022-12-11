@@ -19,5 +19,7 @@ public class RegisterCredentialsDTO {
     private String password;
     @NotEmpty(message = "Repeated password cannot be empty")
     private String passwordRepeat;
+    @NotEmpty(message = "Email cannot be empty")
+    private String email;
 
 }

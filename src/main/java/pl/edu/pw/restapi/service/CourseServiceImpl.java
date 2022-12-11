@@ -1,9 +1,7 @@
 package pl.edu.pw.restapi.service;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -15,9 +13,11 @@ import pl.edu.pw.restapi.dto.*;
 import pl.edu.pw.restapi.dto.mapper.BuyCourseMapper;
 import pl.edu.pw.restapi.dto.mapper.CourseMapper;
 import pl.edu.pw.restapi.repository.UserRepository;
+import pl.edu.pw.restapi.service.email.EmailNotificationService;
 import pl.edu.pw.restapi.service.payu.PayuConnector;
-import pl.edu.pw.restapi.service.payu.PayuRequest;
-import pl.edu.pw.restapi.service.payu.PayuResponse;
+import pl.edu.pw.restapi.service.payu.dto.PayuNotification;
+import pl.edu.pw.restapi.service.payu.dto.PayuRequest;
+import pl.edu.pw.restapi.service.payu.dto.PayuResponse;
 import pl.edu.pw.restapi.service.updater.CourseUpdater;
 import pl.edu.pw.restapi.repository.CourseRepository;
 
@@ -37,6 +37,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseMapper courseMapper;
     private final BuyCourseMapper buyCourseMapper;
     private final PayuConnector payuConnector;
+    private final EmailNotificationService notificationService;
 
     @Override
     public List<CourseDTO> getCourses(String title, List<Long> categories, List<Long> difficulties, Double priceMin,
@@ -124,18 +125,19 @@ public class CourseServiceImpl implements CourseService {
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
         if (course.getPrice() == 0) {
-            addCourseToBoughtCourses(user, course);
+            addCourseToBoughtCourses(user, course, null);
             return null;
         }
 
         PayuRequest request = payuConnector.createRequest(username, course, ip);
         PayuResponse response = payuConnector.createOrder(request);
+        notificationService.sendPaymentNotification(user, course, response);
 
         return buyCourseMapper.map(response);
     }
 
     @Override
-    public void boughtCourse(Long courseId, String username, PayuNotificationDTO notification) {
+    public void boughtCourse(Long courseId, String username, PayuNotification notification) {
         try {
             String status = notification.getOrder().getStatus();
             if (status.equals("COMPLETED")) {
@@ -148,16 +150,17 @@ public class CourseServiceImpl implements CourseService {
                 Course course = courseRepository.findById(courseId)
                         .orElseThrow(() -> new EntityNotFoundException("Course not found"));
 
-                addCourseToBoughtCourses(user, course);
+                addCourseToBoughtCourses(user, course, notification);
             }
         } catch (Exception e) {
             log.error("Cannot add course " + courseId + " to " + username + " bought courses", e);
         }
     }
 
-    private void addCourseToBoughtCourses(User user, Course course) {
+    private void addCourseToBoughtCourses(User user, Course course, PayuNotification payuNotification) {
         user.getBoughtCourses().add(course);
         userRepository.save(user);
+        notificationService.sendPurchaseNotification(user, course, payuNotification);
     }
 
     private void updateCourse(UpdateCourseDTO course, Course courseToUpdate) {

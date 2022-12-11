@@ -5,6 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
+import pl.edu.pw.restapi.service.payu.dto.PayuAuthorizationResponse;
+import pl.edu.pw.restapi.service.payu.dto.PayuProduct;
+import pl.edu.pw.restapi.service.payu.dto.PayuRequest;
+import pl.edu.pw.restapi.service.payu.dto.PayuResponse;
 
 import java.io.IOException;
 import java.net.URI;
@@ -78,8 +82,8 @@ public class PayuConnector {
                 .build();
     }
 
-    private PayuProductRequest createProductRequest(Course course) {
-        return PayuProductRequest.builder()
+    private PayuProduct createProductRequest(Course course) {
+        return PayuProduct.builder()
                 .name(course.getTitle())
                 .unitPrice(payuPrice(course.getPrice()))
                 .quantity("1")

@@ -1,4 +1,4 @@
-package pl.edu.pw.restapi.service.payu;
+package pl.edu.pw.restapi.service.payu.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
