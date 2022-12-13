@@ -39,8 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(RegisterCredentialsDTO credentials) {
         userCredentialsValidator.validate(credentials);
-        checkIfUsernameIsTaken(credentials.getUsername());
-        //TODO check if email is taken
+        checkIfUsernameOrEmailIsTaken(credentials.getUsername(), credentials.getEmail());
 
         User user = mapToUser(credentials);
         userRepository.save(user);
@@ -94,11 +93,19 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private void checkIfUsernameIsTaken(String username) {
-        Optional<User> userSameUsername = userRepository.findByUsername(username);
+    private void checkIfUsernameOrEmailIsTaken(String username, String email) {
+        User user = userRepository.findByUsernameOrEmail(username, email).orElse(null);
 
-        if (userSameUsername.isPresent()) {
-            throw new IllegalArgumentException("Username is already taken");
+        if (user == null) {
+            return;
+        }
+
+        if (user.getUsername().equals(username)) {
+            throw new IllegalArgumentException("Username is taken");
+        }
+
+        if (user.getEmail().equals(email)) {
+            throw new IllegalArgumentException("Email is taken");
         }
     }
 
