@@ -161,6 +161,7 @@ public class CourseServiceImpl implements CourseService {
         user.getBoughtCourses().add(course);
         userRepository.save(user);
         notificationService.sendPurchaseNotification(user, course, payuNotification);
+        log.info("Course " + course.getId() + " was bought by user " + user.getId() + " for price " + course.getPrice());
     }
 
     private void updateCourse(UpdateCourseDTO course, Course courseToUpdate) {

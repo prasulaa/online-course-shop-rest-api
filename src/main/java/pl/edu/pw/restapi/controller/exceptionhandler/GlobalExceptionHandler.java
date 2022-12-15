@@ -6,9 +6,11 @@ import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -61,6 +63,20 @@ public class GlobalExceptionHandler {
         String msg = "Wrong argument value";
 
         return new ResponseEntity<>(new ExceptionDTO(status, msg), status);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDTO> handle(MissingServletRequestParameterException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        return new ResponseEntity<>(new ExceptionDTO(status, e.getMessage()), status);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDTO> handle(UsernameNotFoundException e) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        return new ResponseEntity<>(new ExceptionDTO(status, e.getMessage()), status);
     }
 
     @ExceptionHandler

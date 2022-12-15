@@ -59,6 +59,7 @@ public class EmailService {
         message.setText(content);
 
 //        Transport.send(message);
+        //TODO delete this
         System.out.println(to + " " + subject + "\n" + content);
     }
 
