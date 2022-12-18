@@ -1,6 +1,7 @@
 package pl.edu.pw.restapi.controller.exceptionhandler;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 import pl.edu.pw.restapi.dto.ExceptionDTO;
 
@@ -23,6 +25,9 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
+    @Value("spring.servlet.multipart.max-file-size")
+    private String maxFileSize;
 
     @ExceptionHandler
     public ResponseEntity<ExceptionDTO> handle(IllegalArgumentException e) {
@@ -83,6 +88,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionDTO> handle(HttpMessageNotReadableException e) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         String msg = "Wrong json format";
+
+        return new ResponseEntity<>(new ExceptionDTO(status, msg), status);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDTO> handle(MaxUploadSizeExceededException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String msg = "File too large. Max file size is " + maxFileSize;
 
         return new ResponseEntity<>(new ExceptionDTO(status, msg), status);
     }
