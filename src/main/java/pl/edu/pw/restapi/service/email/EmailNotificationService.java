@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
-import pl.edu.pw.restapi.domain.User;
+import pl.edu.pw.restapi.domain.CourseUser;
 import pl.edu.pw.restapi.service.payu.dto.PayuNotification;
 import pl.edu.pw.restapi.service.payu.dto.PayuResponse;
 
@@ -17,7 +17,7 @@ public class EmailNotificationService {
 
     private final EmailService emailService;
 
-    public void sendRegistrationNotification(User user) {
+    public void sendRegistrationNotification(CourseUser user) {
         try {
             String subject = "Welcome to the course shop!";
             String content = "Hi " + user.getUsername() + ",\n" +
@@ -29,7 +29,7 @@ public class EmailNotificationService {
         }
     }
 
-    public void sendPaymentNotification(User user, Course course, PayuResponse payuResponse) {
+    public void sendPaymentNotification(CourseUser user, Course course, PayuResponse payuResponse) {
         try {
             String subject = "Course shop - new payment registered";
             String content = "Hi " + user.getUsername() + ",\n" +
@@ -46,7 +46,7 @@ public class EmailNotificationService {
         }
     }
 
-    public void sendPurchaseNotification(User user, Course course, PayuNotification payuNotification) {
+    public void sendPurchaseNotification(CourseUser user, Course course, PayuNotification payuNotification) {
         String subject = "Course shop - new purchase registered";
         String content = "Hi " + user.getUsername() + ",\n" +
                 "We registered new purchase in our system.\n" +
@@ -69,7 +69,7 @@ public class EmailNotificationService {
         }
     }
 
-    public void sendResetPasswordNotification(User user, String newPassword) {
+    public void sendResetPasswordNotification(CourseUser user, String newPassword) {
         String subject = "Course shop - password reset";
         String content = "Hi " + user.getUsername() + ",\n" +
                 "Your new password: " + newPassword;

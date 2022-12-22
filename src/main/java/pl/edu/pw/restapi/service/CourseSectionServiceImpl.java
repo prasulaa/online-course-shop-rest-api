@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseSection;
-import pl.edu.pw.restapi.domain.User;
+import pl.edu.pw.restapi.domain.CourseUser;
 import pl.edu.pw.restapi.dto.CourseSectionDTO;
 import pl.edu.pw.restapi.dto.CreateCourseSectionDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseSectionDTO;
@@ -27,7 +27,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
 
     @Override
     public CourseSectionDTO getCourseSection(Long courseId, Long sectionId, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         CourseSection section = courseSectionRepository
                 .findByCourseIdAndSectionIdAndUserId(courseId, sectionId, user.getId())
@@ -38,7 +38,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
 
     @Override
     public CourseSectionDTO createCourseSection(Long courseId, CreateCourseSectionDTO section, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         Course course = courseRepository.findReleasedCourseByCourseIdAndUserId(courseId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
@@ -52,7 +52,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
     @Override
     public CourseSectionDTO updateCourseSection(Long courseId, Long sectionId,
                                                 UpdateCourseSectionDTO section, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         CourseSection sectionToUpdate = courseSectionRepository
                 .findReleasedCourseSectionByCourseIdAndSectionIdAndUserId(courseId, sectionId, user.getId())
@@ -65,7 +65,7 @@ public class CourseSectionServiceImpl implements CourseSectionService {
 
     @Override
     public void deleteCourseSection(Long courseId, Long sectionId, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         Course course = courseRepository.findReleasedCourseByCourseIdAndUserId(courseId, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));

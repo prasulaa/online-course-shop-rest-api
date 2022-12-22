@@ -35,9 +35,9 @@ public interface CourseSectionRepository extends JpaRepository<CourseSection, Lo
             "join course_sections css on " +
                     "cs.id = css.sections_id " +
             "join ( " +
-                    "select ubc.user_id as uid, ubc.bought_courses_id as cid from user_bought_courses ubc " +
+                    "select ubc.course_user_id as uid, ubc.bought_courses_id as cid from course_user_bought_courses ubc " +
                     "union " +
-                    "select urc.user_id as uid, urc.released_courses_id as cid from user_released_courses urc " +
+                    "select urc.course_user_id as uid, urc.released_courses_id as cid from course_user_released_courses urc " +
             ") uc on " +
                 "uc.cid = css.course_id and " +
                 "css.course_id = :courseId and " +
@@ -51,11 +51,11 @@ public interface CourseSectionRepository extends JpaRepository<CourseSection, Lo
             "select cs.* from course_section cs " +
                     "join course_sections css on " +
                         "cs.id = css.sections_id " +
-                    "join user_released_courses urc on " +
+                    "join course_user_released_courses urc on " +
                         "urc.released_courses_id = css.course_id and " +
                         "css.course_id = :courseId and " +
                         "cs.id = :sectionId and " +
-                        "urc.user_id = :userId")
+                        "urc.course_user_id = :userId")
     Optional<CourseSection> findReleasedCourseSectionByCourseIdAndSectionIdAndUserId(@Param("courseId") Long courseId,
                                                                                      @Param("sectionId") Long sectionId,
                                                                                      @Param("userId") Long userId);

@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseFile;
-import pl.edu.pw.restapi.domain.User;
+import pl.edu.pw.restapi.domain.CourseUser;
 import pl.edu.pw.restapi.dto.CourseFileDTO;
 import pl.edu.pw.restapi.dto.CourseFileInfoDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseFileMapper;
@@ -45,7 +45,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldReturnFilesWhenFilesAndUsernameArePresentInRepository() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         CourseFile file1 = new CourseFile(1L, "File1", "jpg", new byte[8], course);
         CourseFile file2 = new CourseFile(2L, "File2", "jpg", new byte[8], course);
         List<CourseFile> filesFromRepo = List.of(file1, file2);
@@ -69,7 +69,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldReturnEmptyListWhenFilesAreNotPresentAndUsernameIsPresent() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         List<CourseFile> filesFromRepo = List.of();
 
         when(userService.loadUserByUsername(user.getUsername()))
@@ -102,7 +102,7 @@ public class CourseFileServiceTest {
 
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenUsernameIsPresentAndCourseIsNotPresent() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         Long courseId = 1L;
         List<CourseFile> filesFromRepo = List.of();
 
@@ -133,7 +133,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldReturnFileWhenUsernameAndCourseAndFileAreInRepository() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         CourseFile file = new CourseFile(1L, "File1", "jpg", new byte[8], course);
 
         when(userService.loadUserByUsername(user.getUsername()))
@@ -170,7 +170,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenCourseIsNotInRepository() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenReturn(user);
@@ -188,7 +188,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenFileIsNotInRepository() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         CourseFile file = new CourseFile(1L, "File1", "jpg", new byte[8], course);
 
         when(userService.loadUserByUsername(user.getUsername()))
@@ -212,7 +212,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldSaveFileToRepositoryWhenUsernameAndCourseIsInRepository() throws IOException {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         MultipartFile file = mock(MultipartFile.class);
         String fileName = "file.jpg";
         String fileType = "jpg";
@@ -255,7 +255,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenCreatingFileAndCourseIsNotPresentInRepository() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         MultipartFile file = mock(MultipartFile.class);
 
         when(userService.loadUserByUsername(user.getUsername()))
@@ -276,7 +276,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldDeleteFileWhenFileExistsInReleasedCourses() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         Long fileId = 1L;
 
         when(userService.loadUserByUsername(user.getUsername()))
@@ -294,7 +294,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldThrowUsernameNotFoundExceptionWhenDeletingFileAndUsernameDoesNotExists() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         Long fileId = 1L;
         String exceptionMsg = "Not found";
 
@@ -312,7 +312,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenDeletingFileAndCourseIsNotPresentInReleasedCourses() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         Long fileId = 1L;
 
         when(userService.loadUserByUsername(user.getUsername()))
@@ -331,7 +331,7 @@ public class CourseFileServiceTest {
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenDeletingFileAndFileDoesNotExist() {
         Course course = Course.builder().id(1L).build();
-        User user = new User(1L, "username", "password", List.of(course), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(course), List.of());
         Long fileId = 1L;
 
         when(userService.loadUserByUsername(user.getUsername()))

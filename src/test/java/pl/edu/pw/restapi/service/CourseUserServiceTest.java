@@ -4,13 +4,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.passay.Rule;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.edu.pw.restapi.domain.User;
+import pl.edu.pw.restapi.domain.CourseUser;
 import pl.edu.pw.restapi.dto.RegisterCredentialsDTO;
 import pl.edu.pw.restapi.repository.UserRepository;
+import pl.edu.pw.restapi.security.SecurityConfig;
+import pl.edu.pw.restapi.service.email.EmailNotificationService;
+import pl.edu.pw.restapi.service.validator.UserCredentialsValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,12 +25,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+public class CourseUserServiceTest {
 
     @Mock
     private UserRepository userRepository;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private EmailNotificationService emailNotificationService;
+    @Mock
+    private List<Rule> passwordRules;
+    @Spy
+    private UserCredentialsValidator userCredentialsValidator = new UserCredentialsValidator(SecurityConfig.passwordRules());
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -35,18 +45,18 @@ public class UserServiceTest {
 
     @Test
     public void shouldReturnUserWhenUsernameIsInRepository() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email@email.com", List.of(), List.of());
         when(userRepository.findByUsername(user.getUsername()))
                 .thenReturn(Optional.of(user));
 
-        User actualUser = (User) userService.loadUserByUsername(user.getUsername());
+        CourseUser actualUser = (CourseUser) userService.loadUserByUsername(user.getUsername());
 
         assertEquals(user, actualUser);
     }
 
     @Test
     public void shouldThrowUsernameNotFoundExceptionWhenUsernameIsNotInRepository() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email@email.com", List.of(), List.of());
         when(userRepository.findByUsername(user.getUsername()))
                 .thenReturn(Optional.empty());
 
@@ -62,9 +72,9 @@ public class UserServiceTest {
 
     @Test
     public void shouldRegisterUserWhenCredentialsAreCorrect() {
-        RegisterCredentialsDTO credentials = new RegisterCredentialsDTO("username", "Password123", "Password123");
+        RegisterCredentialsDTO credentials = new RegisterCredentialsDTO("username", "Password123", "Password123", "email@email.com");
 
-        when(userRepository.findByUsername(credentials.getUsername()))
+        when(userRepository.findByUsernameOrEmail(credentials.getUsername(), credentials.getEmail()))
                 .thenReturn(Optional.empty());
         when(passwordEncoder.encode(credentials.getPassword()))
                 .thenReturn("encodedPassword");
@@ -76,25 +86,22 @@ public class UserServiceTest {
 
     @Test
     public void shouldThrowIllegalArgumentExceptionWhenUsernameIsTaken() {
-        RegisterCredentialsDTO credentials = new RegisterCredentialsDTO("username", "Password123", "Password123");
-        User userWithSameName = new User(1L, credentials.getUsername(), "password", List.of(), List.of());
+        RegisterCredentialsDTO credentials = new RegisterCredentialsDTO("username", "Password123", "Password123", "email@email.com");
+        CourseUser userWithSameName = new CourseUser(1L, credentials.getUsername(), "password", "email123", List.of(), List.of());
 
-        when(userRepository.findByUsername(credentials.getUsername()))
+        when(userRepository.findByUsernameOrEmail(credentials.getUsername(), credentials.getEmail()))
                 .thenReturn(Optional.of(userWithSameName));
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> userService.registerUser(credentials)
         );
-        assertEquals("Username is already taken", exception.getMessage());
+        assertEquals("Username is taken", exception.getMessage());
     }
 
     @Test
     public void shouldThrowIllegalArgumentExceptionWhenPasswordIsNotStrongEnough() {
-        RegisterCredentialsDTO credentials = new RegisterCredentialsDTO("username", "Password", "Password");
-
-        when(userRepository.findByUsername(credentials.getUsername()))
-                .thenReturn(Optional.empty());
+        RegisterCredentialsDTO credentials = new RegisterCredentialsDTO("username", "Password", "Password", "email@email.com");
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -105,10 +112,7 @@ public class UserServiceTest {
 
     @Test
     public void shouldThrowIllegalArgumentExceptionWhenPasswordAndRepeatedPasswordIsNotEqual() {
-        RegisterCredentialsDTO credentials = new RegisterCredentialsDTO("username", "Password123", "Password321");
-
-        when(userRepository.findByUsername(credentials.getUsername()))
-                .thenReturn(Optional.empty());
+        RegisterCredentialsDTO credentials = new RegisterCredentialsDTO("username", "Password123", "Password321", "email@email.com");
 
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,

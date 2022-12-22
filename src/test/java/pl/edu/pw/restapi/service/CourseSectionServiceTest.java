@@ -44,7 +44,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldReturnCourseSectionWhenSectionAndUserExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseLesson lesson = new CourseLesson(1L, "Data123", "Name");
         CourseSection section = new CourseSection(1L, "Section", List.of(lesson));
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(section), "");
@@ -68,7 +68,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowUsernameNotFoundExceptionWhenGettingSectionAndUserDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseLesson lesson = new CourseLesson(1L, "Data123", "Name");
         CourseSection section = new CourseSection(1L, "Section", List.of(lesson));
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(section), "");
@@ -86,7 +86,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenGettingSectionAndSectionDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseLesson lesson = new CourseLesson(1L, "Data123", "Name");
         CourseSection section = new CourseSection(1L, "Section", List.of(lesson));
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(section), "");
@@ -108,7 +108,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldCreateSectionWhenCourseAndUserExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CreateCourseSectionDTO section = new CreateCourseSectionDTO("Section");
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", new ArrayList<>(), "");
 
@@ -126,7 +126,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowUsernameNotFoundExceptionWhenCreatingSectionAndUserDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CreateCourseSectionDTO section = new CreateCourseSectionDTO("Section");
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", new ArrayList<>(), "");
         String exceptionMsg = "Not found";
@@ -143,7 +143,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenCreatingSectionAndCourseDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CreateCourseSectionDTO section = new CreateCourseSectionDTO("Section");
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", new ArrayList<>(), "");
 
@@ -161,7 +161,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowIllegalArgumentExceptionWhenCreatingSectionAndSectionWithSameNameAlreadyExists() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseSection section = new CourseSection(1L, "Section", List.of());
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(section), "");
         CreateCourseSectionDTO createSection = new CreateCourseSectionDTO(section.getName());
@@ -185,7 +185,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldUpdateSectionWhenSectionAndUserExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseSection section = new CourseSection(1L, "Section", List.of());
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(section), "");
         UpdateCourseSectionDTO updateSection = new UpdateCourseSectionDTO("Section");
@@ -203,7 +203,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowUsernameNotFoundExceptionWhenUpdatingSectionAndUserDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseSection section = new CourseSection(1L, "Section", List.of());
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(section), "");
         UpdateCourseSectionDTO updateSection = new UpdateCourseSectionDTO("Section");
@@ -221,7 +221,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenUpdatingSectionAndCourseDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseSection section = new CourseSection(1L, "Section", List.of());
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(section), "");
         UpdateCourseSectionDTO updateSection = new UpdateCourseSectionDTO("Section");
@@ -241,7 +241,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowIllegalArgumentExceptionWhenUpdatingSectionAndSectionWithSameNameAlreadyExists() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseSection section = new CourseSection(1L, "Section", List.of());
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(section), "");
         UpdateCourseSectionDTO updateSection = new UpdateCourseSectionDTO(section.getName());
@@ -265,7 +265,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldDeleteSectionWhenSectionAndUserExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseSection section = new CourseSection(1L, "Section", List.of());
         List<CourseSection> sections = new ArrayList<>();
         sections.add(section);
@@ -284,7 +284,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowUsernameNotFoundExceptionWhenDeletingSectionAndUserDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseSection section = new CourseSection(1L, "Section", List.of());
         List<CourseSection> sections = new ArrayList<>();
         sections.add(section);
@@ -303,7 +303,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenDeletingSectionAndCourseDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseSection section = new CourseSection(1L, "Section", List.of());
         List<CourseSection> sections = new ArrayList<>();
         sections.add(section);
@@ -323,7 +323,7 @@ public class CourseSectionServiceTest {
 
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenDeletingSectionAndSectionDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseSection section = new CourseSection(1L, "Section", List.of());
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", new ArrayList<>(), "");
 

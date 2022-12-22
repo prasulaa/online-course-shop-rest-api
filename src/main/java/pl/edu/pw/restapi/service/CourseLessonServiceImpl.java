@@ -4,14 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.CourseLesson;
 import pl.edu.pw.restapi.domain.CourseSection;
-import pl.edu.pw.restapi.domain.User;
+import pl.edu.pw.restapi.domain.CourseUser;
 import pl.edu.pw.restapi.dto.CourseLessonDTO;
 import pl.edu.pw.restapi.dto.CreateCourseLessonDTO;
 import pl.edu.pw.restapi.dto.UpdateCourseLessonDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseLessonMapper;
 import pl.edu.pw.restapi.repository.CourseLessonRepository;
 import pl.edu.pw.restapi.repository.CourseSectionRepository;
-import pl.edu.pw.restapi.repository.UserRepository;
 import pl.edu.pw.restapi.service.updater.CourseLessonUpdater;
 
 import javax.persistence.EntityNotFoundException;
@@ -30,7 +29,7 @@ public class CourseLessonServiceImpl implements CourseLessonService {
 
     @Override
     public CourseLessonDTO getLesson(Long courseId, Long sectionId, Long lessonId, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         CourseLesson lesson = courseLessonRepository
                 .findCourseLessonByCourseIdAndSectionIdAndLessonIdAndUserId(courseId, sectionId, lessonId, user.getId())
@@ -41,7 +40,7 @@ public class CourseLessonServiceImpl implements CourseLessonService {
 
     @Override
     public CourseLessonDTO createLesson(Long courseId, Long sectionId, CreateCourseLessonDTO lesson, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         CourseLesson createdLesson = courseLessonMapper.map(lesson);
 
@@ -58,7 +57,7 @@ public class CourseLessonServiceImpl implements CourseLessonService {
     @Override
     public CourseLessonDTO updateLesson(Long courseId, Long sectionId, Long lessonId,
                                         UpdateCourseLessonDTO lessonDTO, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         CourseLesson lesson = courseLessonRepository
                 .findReleasedCourseLessonByCourseIdAndSectionIdAndLessonIdAndUserId(courseId, sectionId, lessonId, user.getId())
@@ -71,7 +70,7 @@ public class CourseLessonServiceImpl implements CourseLessonService {
 
     @Override
     public void deleteLesson(Long courseId, Long sectionId, Long lessonId, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         CourseSection section = courseSectionRepository
                 .findReleasedCourseSectionByCourseIdAndSectionIdAndUserId(courseId, sectionId, user.getId())

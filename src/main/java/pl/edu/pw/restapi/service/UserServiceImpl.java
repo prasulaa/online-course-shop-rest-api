@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.edu.pw.restapi.domain.User;
+import pl.edu.pw.restapi.domain.CourseUser;
 import pl.edu.pw.restapi.dto.ChangePasswordDTO;
 import pl.edu.pw.restapi.dto.RegisterCredentialsDTO;
 import pl.edu.pw.restapi.repository.UserRepository;
@@ -16,8 +16,6 @@ import pl.edu.pw.restapi.service.email.EmailNotificationService;
 import pl.edu.pw.restapi.service.validator.UserCredentialsValidator;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -41,7 +39,7 @@ public class UserServiceImpl implements UserService {
         userCredentialsValidator.validate(credentials);
         checkIfUsernameOrEmailIsTaken(credentials.getUsername(), credentials.getEmail());
 
-        User user = mapToUser(credentials);
+        CourseUser user = mapToUser(credentials);
         userRepository.save(user);
         notificationService.sendRegistrationNotification(user);
     }
@@ -49,7 +47,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resetPassword(String email) {
         userCredentialsValidator.validateEmail(email);
-        User user = userRepository.findByEmail(email).orElse(null);
+        CourseUser user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null) {
             return;
@@ -65,7 +63,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void changePassword(String username, ChangePasswordDTO changePassword) {
         userCredentialsValidator.validatePasswords(changePassword.getNewPassword(), changePassword.getNewPasswordRepeat());
-        User user = (User) loadUserByUsername(username);
+        CourseUser user = (CourseUser) loadUserByUsername(username);
 
         if (!passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
             throw new IllegalArgumentException("Wrong password");
@@ -85,8 +83,8 @@ public class UserServiceImpl implements UserService {
         return generator.generatePassword(8, rules);
     }
 
-    private User mapToUser(RegisterCredentialsDTO credentials) {
-        return User.builder()
+    private CourseUser mapToUser(RegisterCredentialsDTO credentials) {
+        return CourseUser.builder()
                 .username(credentials.getUsername())
                 .password(passwordEncoder.encode(credentials.getPassword()))
                 .email(credentials.getEmail())
@@ -94,7 +92,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkIfUsernameOrEmailIsTaken(String username, String email) {
-        User user = userRepository.findByUsernameOrEmail(username, email).orElse(null);
+        CourseUser user = userRepository.findByUsernameOrEmail(username, email).orElse(null);
 
         if (user == null) {
             return;

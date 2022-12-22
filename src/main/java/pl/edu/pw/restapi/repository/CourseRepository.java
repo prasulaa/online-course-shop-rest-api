@@ -36,36 +36,36 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query(nativeQuery = true, value =
             "select c.* from course c " +
                     "inner join (" +
-                        "select ubc.user_id as uid, ubc.bought_courses_id as cid from user_bought_courses ubc " +
-                        "union " +
-                        "select urc.user_id as uid, urc.released_courses_id as cid from user_released_courses urc" +
+                    "select ubc.course_user_id as uid, ubc.bought_courses_id as cid from user_bought_courses ubc " +
+                    "union " +
+                    "select urc.course_user_id as uid, urc.released_courses_id as cid from user_released_courses urc" +
                     ") uc on " +
-                        "uc.cid = c.id and " +
-                        "c.id = :courseId and " +
-                        "uc.uid = :userId")
+                    "uc.cid = c.id and " +
+                    "c.id = :courseId and " +
+                    "uc.uid = :userId")
     Optional<Course> findByCourseIdAndUserId(@Param("courseId") Long courseId,
                                              @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value =
             "select c.* from course c " +
-                    "join user_released_courses urc on " +
+                    "join course_user_released_courses urc on " +
                     "urc.released_courses_id = c.id and " +
                     "c.id = :courseId and " +
-                    "urc.user_id= :userId")
+                    "urc.course_user_id= :userId")
     Optional<Course> findReleasedCourseByCourseIdAndUserId(@Param("courseId") Long courseId,
                                                            @Param("userId") Long userId);
 
     @Query(nativeQuery = true, value =
             "select c.* from course c " +
-                    "join user_bought_courses ubc on " +
+                    "join course_user_bought_courses ubc on " +
                     "ubc.bought_courses_id = c.id and " +
-                    "ubc.user_id= :userId")
+                    "ubc.course_user_id= :userId")
     List<Course> findBoughtCoursesByUserId(Long userId);
 
     @Query(nativeQuery = true, value =
             "select c.* from course c " +
-                    "join user_released_courses urc on " +
+                    "join course_user_released_courses urc on " +
                     "urc.released_courses_id = c.id and " +
-                    "urc.user_id= :userId")
+                    "urc.course_user_id= :userId")
     List<Course> findReleasedCoursesByUserId(Long userId);
 }

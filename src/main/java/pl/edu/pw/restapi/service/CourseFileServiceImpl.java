@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseFile;
-import pl.edu.pw.restapi.domain.User;
+import pl.edu.pw.restapi.domain.CourseUser;
 import pl.edu.pw.restapi.dto.CourseFileDTO;
 import pl.edu.pw.restapi.dto.CourseFileInfoDTO;
 import pl.edu.pw.restapi.dto.mapper.CourseFileMapper;
@@ -28,7 +28,7 @@ public class CourseFileServiceImpl implements CourseFileService {
 
     @Override
     public List<CourseFileInfoDTO> getCourseFiles(Long courseId, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         Course course = courseRepository
                 .findByCourseIdAndUserId(courseId, user.getId())
@@ -41,7 +41,7 @@ public class CourseFileServiceImpl implements CourseFileService {
 
     @Override
     public CourseFileDTO getCourseFile(Long courseId, Long fileId, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         Course course = courseRepository
                 .findByCourseIdAndUserId(courseId, user.getId())
@@ -56,7 +56,7 @@ public class CourseFileServiceImpl implements CourseFileService {
 
     @Override
     public CourseFileInfoDTO createCourseFile(Long courseId, MultipartFile courseFile, String username) throws IOException {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         Course course = courseRepository
                 .findReleasedCourseByCourseIdAndUserId(courseId, user.getId())
@@ -72,7 +72,7 @@ public class CourseFileServiceImpl implements CourseFileService {
     @Override
     @Transactional
     public void deleteCourseFile(Long courseId, Long fileId, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         Course course = courseRepository
                 .findReleasedCourseByCourseIdAndUserId(courseId, user.getId())

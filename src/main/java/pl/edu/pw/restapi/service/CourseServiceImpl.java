@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pl.edu.pw.restapi.domain.Course;
 import pl.edu.pw.restapi.domain.CourseCategory;
-import pl.edu.pw.restapi.domain.User;
+import pl.edu.pw.restapi.domain.CourseUser;
 import pl.edu.pw.restapi.dto.*;
 import pl.edu.pw.restapi.dto.mapper.BuyCourseMapper;
 import pl.edu.pw.restapi.dto.mapper.CourseMapper;
@@ -40,6 +40,7 @@ public class CourseServiceImpl implements CourseService {
     private final EmailNotificationService notificationService;
 
     @Override
+    @Transactional
     public List<CourseDTO> getCourses(String title, List<Long> categories, List<Long> difficulties, Double priceMin,
                                       Double priceMax, Integer pageNumber, Integer pageSize, Sort.Direction sort) {
         Pageable pageable = getPageable(pageNumber, pageSize, sort);
@@ -56,7 +57,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDTO> getBoughtCourses(String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         List<Course> courses = courseRepository.findBoughtCoursesByUserId(user.getId());
 
@@ -65,7 +66,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDTO> getReleasedCourses(String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         List<Course> courses = courseRepository.findReleasedCoursesByUserId(user.getId());
 
@@ -74,7 +75,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDetailsDTO createCourse(CreateCourseDTO course, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         List<CourseCategory> categories = courseCategoryService.getCategories(course.getCategories());
         Course mappedCourse = courseMapper.map(course, categories);
@@ -88,7 +89,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CourseDetailsDTO updateCourse(UpdateCourseDTO course, Long id, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         Course courseToUpdate = courseRepository.findReleasedCourseByCourseIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
@@ -102,7 +103,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public void deleteCourse(Long id, String username) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         Course courseToDelete = courseRepository.findReleasedCourseByCourseIdAndUserId(id, user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Course not found"));
@@ -114,7 +115,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public BuyCourseResponseDTO buyCourse(Long id, String username, String ip) {
-        User user = (User) userService.loadUserByUsername(username);
+        CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
         courseRepository.findByCourseIdAndUserId(id, user.getId())
                 .ifPresent((course) -> {
@@ -141,7 +142,7 @@ public class CourseServiceImpl implements CourseService {
         try {
             String status = notification.getOrder().getStatus();
             if (status.equals("COMPLETED")) {
-                User user = (User) userService.loadUserByUsername(username);
+                CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 
                 if (courseRepository.findByCourseIdAndUserId(courseId, user.getId()).isPresent()) {
                     return;
@@ -157,7 +158,7 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-    private void addCourseToBoughtCourses(User user, Course course, PayuNotification payuNotification) {
+    private void addCourseToBoughtCourses(CourseUser user, Course course, PayuNotification payuNotification) {
         user.getBoughtCourses().add(course);
         userRepository.save(user);
         notificationService.sendPurchaseNotification(user, course, payuNotification);

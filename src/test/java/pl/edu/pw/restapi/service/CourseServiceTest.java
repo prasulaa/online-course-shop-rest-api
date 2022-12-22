@@ -127,7 +127,7 @@ public class CourseServiceTest {
     public void shouldReturnBoughtCoursesWhenUserIsInRepository() {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
         List<Course> boughtCourses = List.of(course);
-        User user = new User(1L, "username", "password", List.of(), boughtCourses);
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), boughtCourses);
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenReturn(user);
@@ -145,7 +145,7 @@ public class CourseServiceTest {
     @Test
     public void shouldReturnEmptyListWhenUserDoesNotHaveBoughtCourses() {
         List<Course> boughtCourses = List.of();
-        User user = new User(1L, "username", "password", List.of(), boughtCourses);
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), boughtCourses);
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenReturn(user);
@@ -159,7 +159,7 @@ public class CourseServiceTest {
 
     @Test
     public void shouldThrowUsernameNotFoundExceptionWhenGettingBoughtCoursesAndUserDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenThrow(new UsernameNotFoundException(""));
@@ -177,7 +177,7 @@ public class CourseServiceTest {
     public void shouldReturnReleasedCoursesWhenUserIsInRepository() {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
         List<Course> releasedCourses = List.of(course);
-        User user = new User(1L, "username", "password", List.of(), releasedCourses);
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), releasedCourses);
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenReturn(user);
@@ -195,7 +195,7 @@ public class CourseServiceTest {
     @Test
     public void shouldReturnEmptyListWhenUserDoesNotHaveReleasedCourses() {
         List<Course> releasedCourses = List.of();
-        User user = new User(1L, "username", "password", List.of(), releasedCourses);
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), releasedCourses);
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenReturn(user);
@@ -209,7 +209,7 @@ public class CourseServiceTest {
 
     @Test
     public void shouldThrowUsernameNotFoundExceptionWhenGettingReleasedCoursesAndUserDoesNotExist() {
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenThrow(new UsernameNotFoundException(""));
@@ -227,7 +227,7 @@ public class CourseServiceTest {
     public void shouldCreateCourseWhenUserIsInRepository() {
         CreateCourseDTO course = new CreateCourseDTO("Name", "thumbnail", 10.0, List.of(), CourseDifficulty.MEDIUM, List.of(), "Description");
         List<Course> releasedCoursesMock = Mockito.mock(List.class);
-        User user = new User(1L, "username", "password", List.of(), releasedCoursesMock);
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), releasedCoursesMock);
         List<CourseCategory> categories = List.of(new CourseCategory(1L, "category", null));
 
         when(userService.loadUserByUsername(user.getUsername()))
@@ -254,7 +254,7 @@ public class CourseServiceTest {
     public void shouldThrowUsernameNotFoundExceptionWhenCreatingCourseAndUserDoesNotExist() {
         CreateCourseDTO course = new CreateCourseDTO("Name", "thumbnail", 10.0, List.of(), CourseDifficulty.MEDIUM, List.of(), "Description");
         List<Course> releasedCoursesMock = Mockito.mock(List.class);
-        User user = new User(1L, "username", "password", List.of(), new ArrayList<>());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), new ArrayList<>());
         List<CourseCategory> categories = List.of(new CourseCategory(1L, "category", null));
 
         when(userService.loadUserByUsername(user.getUsername()))
@@ -272,7 +272,7 @@ public class CourseServiceTest {
     @Test
     public void shouldUpdateCourseWhenUserAndCourseIsInRepository() {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseCategory category = new CourseCategory(1L, "category", null);
         UpdateCourseDTO updateCourse = new UpdateCourseDTO("Title", "thumbnail", 5.0, List.of(category.getId()), CourseDifficulty.MEDIUM, List.of("Scope1"), "description");
 
@@ -302,7 +302,7 @@ public class CourseServiceTest {
     @Test
     public void shouldThrowUsernameNotFoundExceptionWhenUpdatingCourseAndUserDoesNotExist() {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseCategory category = new CourseCategory(1L, "category", null);
         UpdateCourseDTO updateCourse = new UpdateCourseDTO("Title", "thumbnail", 5.0, List.of(category.getId()), CourseDifficulty.MEDIUM, List.of("Scope1"), "description");
 
@@ -318,7 +318,7 @@ public class CourseServiceTest {
     @Test
     public void shouldThrowEntityNotFoundExceptionWhenUpdatingCourseAndCourseDoesNotExist() {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseCategory category = new CourseCategory(1L, "category", null);
         UpdateCourseDTO updateCourse = new UpdateCourseDTO("Title", "thumbnail", 5.0, List.of(category.getId()), CourseDifficulty.MEDIUM, List.of("Scope1"), "description");
 
@@ -337,7 +337,7 @@ public class CourseServiceTest {
     @Test
     public void shouldThrowIllegalArgumentExceptionWhenUpdatingCourseAndCategoryDoesNotExist() {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
-        User user = new User(1L, "username", "password", List.of(), List.of());
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         UpdateCourseDTO updateCourse = new UpdateCourseDTO("Title", "thumbnail", 5.0, List.of(1L), CourseDifficulty.MEDIUM, List.of("Scope1"), "description");
 
         when(userService.loadUserByUsername(user.getUsername()))
@@ -362,7 +362,7 @@ public class CourseServiceTest {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
         List<Course> courses = new ArrayList<>();
         courses.add(course);
-        User user = new User(1L, "username", "password", List.of(), courses);
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), courses);
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenReturn(user);
@@ -380,7 +380,7 @@ public class CourseServiceTest {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
         List<Course> courses = new ArrayList<>();
         courses.add(course);
-        User user = new User(1L, "username", "password", List.of(), courses);
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), courses);
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenThrow(new UsernameNotFoundException(""));
@@ -396,7 +396,7 @@ public class CourseServiceTest {
         Course course = new Course(1L, "Name", 0.0, List.of(), CourseDifficulty.EASY, List.of(), "", List.of(), "thumbnail1");
         List<Course> courses = new ArrayList<>();
         courses.add(course);
-        User user = new User(1L, "username", "password", List.of(), courses);
+        CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), courses);
 
         when(userService.loadUserByUsername(user.getUsername()))
                 .thenReturn(user);
