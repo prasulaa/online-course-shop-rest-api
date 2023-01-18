@@ -25,32 +25,32 @@ public class DbInit implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         //COURSE CATEGORIES
-        CourseCategory categoryProgramming = new CourseCategory("Programming");
-        List<CourseCategory> programmingCategories = new ArrayList<>();
-        CourseCategory categoryProgrammingJava = new CourseCategory("Java");
-        programmingCategories.add(categoryProgrammingJava);
-        CourseCategory categoryProgrammingCpp = new CourseCategory("C++");
-        programmingCategories.add(categoryProgrammingCpp);
-        CourseCategory categoryProgrammingPython = new CourseCategory("Python");
-        programmingCategories.add(categoryProgrammingPython);
-        categoryProgramming.setSubcategories(programmingCategories);
-
-        courseCategoryRepository.save(categoryProgrammingJava);
-        courseCategoryRepository.save(categoryProgrammingCpp);
-        courseCategoryRepository.save(categoryProgrammingPython);
-        courseCategoryRepository.save(categoryProgramming);
-
-        CourseCategory categoryMusic = new CourseCategory("Music");
-        List<CourseCategory> musicCategories = new ArrayList<>();
-        CourseCategory categoryMusicSinging = new CourseCategory("Singing");
-        musicCategories.add(categoryMusicSinging);
-        CourseCategory categoryMusicGuitar = new CourseCategory("Guitar");
-        musicCategories.add(categoryMusicGuitar);
-        categoryMusic.setSubcategories(musicCategories);
-
-        courseCategoryRepository.save(categoryMusicSinging);
-        courseCategoryRepository.save(categoryMusicGuitar);
-        courseCategoryRepository.save(categoryMusic);
+//        CourseCategory categoryProgramming = new CourseCategory("Programming");
+//        List<CourseCategory> programmingCategories = new ArrayList<>();
+//        CourseCategory categoryProgrammingJava = new CourseCategory("Java");
+//        programmingCategories.add(categoryProgrammingJava);
+//        CourseCategory categoryProgrammingCpp = new CourseCategory("C++");
+//        programmingCategories.add(categoryProgrammingCpp);
+//        CourseCategory categoryProgrammingPython = new CourseCategory("Python");
+//        programmingCategories.add(categoryProgrammingPython);
+//        categoryProgramming.setSubcategories(programmingCategories);
+//
+//        courseCategoryRepository.save(categoryProgrammingJava);
+//        courseCategoryRepository.save(categoryProgrammingCpp);
+//        courseCategoryRepository.save(categoryProgrammingPython);
+//        courseCategoryRepository.save(categoryProgramming);
+//
+//        CourseCategory categoryMusic = new CourseCategory("Music");
+//        List<CourseCategory> musicCategories = new ArrayList<>();
+//        CourseCategory categoryMusicSinging = new CourseCategory("Singing");
+//        musicCategories.add(categoryMusicSinging);
+//        CourseCategory categoryMusicGuitar = new CourseCategory("Guitar");
+//        musicCategories.add(categoryMusicGuitar);
+//        categoryMusic.setSubcategories(musicCategories);
+//
+//        courseCategoryRepository.save(categoryMusicSinging);
+//        courseCategoryRepository.save(categoryMusicGuitar);
+//        courseCategoryRepository.save(categoryMusic);
 
         //COURSE - PROGRAMMING IN JAVA
 //        List<CourseCategory> javaCategories = new ArrayList<>();

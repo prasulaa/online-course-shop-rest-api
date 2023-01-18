@@ -49,7 +49,8 @@ public class PayuConnector {
             HttpResponse<String> response = sendOrderRequest(authToken, request);
 
             if (response.statusCode() != 302) {
-                throw new PayuResponseException("Payu order response status not equal 200", response.statusCode(), response.body());
+                throw new PayuResponseException("Payu order response status not equal 302",
+                        response.statusCode(), response.body());
             }
 
             return objectMapper.readValue(response.body(), PayuResponse.class);

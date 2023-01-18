@@ -1,5 +1,6 @@
 package pl.edu.pw.restapi.controller.exceptionhandler;
 
+import com.mysql.cj.jdbc.exceptions.PacketTooBigException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -82,6 +83,14 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.NOT_FOUND;
 
         return new ResponseEntity<>(new ExceptionDTO(status, e.getMessage()), status);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionDTO> handle(PacketTooBigException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String msg = "File too large. Max file size is " + maxFileSize;
+
+        return new ResponseEntity<>(new ExceptionDTO(status, msg), status);
     }
 
     @ExceptionHandler

@@ -80,7 +80,7 @@ public class CourseLessonServiceTest {
     }
 
     @Test
-    public void shouldThrowEntityNotFoundExceptionWhenGettingLessonAndLessonDoesNotExists() {
+    public void shouldThrowEntityNotFoundExceptionWhenGettingLessonAndLessonDoesNotExist() {
         CourseUser user = new CourseUser(1L, "username", "password", "email", List.of(), List.of());
         CourseLesson lesson = new CourseLesson(1L, "Data123", "Name");
         CourseSection section = new CourseSection(1L, "Section", List.of(lesson));
@@ -91,12 +91,10 @@ public class CourseLessonServiceTest {
         when(courseLessonRepository.findCourseLessonByCourseIdAndSectionIdAndLessonIdAndUserId(course.getId(), section.getId(), lesson.getId(), user.getId()))
                 .thenReturn(Optional.empty());
 
-
         EntityNotFoundException exception = assertThrows(
                 EntityNotFoundException.class,
                 () -> courseLessonService.getLesson(1L, 1L, 1L, user.getUsername())
         );
-
         assertEquals("Lesson not found", exception.getMessage());
     }
 

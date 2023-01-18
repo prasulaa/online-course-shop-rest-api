@@ -74,6 +74,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @Transactional
     public CourseDetailsDTO createCourse(CreateCourseDTO course, String username) {
         CourseUser user = (CourseUser) userService.loadUserByUsername(username);
 

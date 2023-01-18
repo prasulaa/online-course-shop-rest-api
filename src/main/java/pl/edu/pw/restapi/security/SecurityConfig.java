@@ -2,12 +2,9 @@ package pl.edu.pw.restapi.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.passay.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,11 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import pl.edu.pw.restapi.security.authentication.*;
 import pl.edu.pw.restapi.service.UserService;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.util.List;
 
@@ -84,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                     .addFilter(authenticationFilter())
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtService, userService))
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtService, userService))
                     .exceptionHandling()
                     .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
@@ -110,7 +105,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 new LengthRule(6, 20),
                 new UppercaseCharacterRule(1),
                 new DigitCharacterRule(1),
-                new AlphabeticalCharacterRule(1)
+                new LowercaseCharacterRule(1)
         );
     }
 }

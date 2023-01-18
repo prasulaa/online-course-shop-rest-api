@@ -16,7 +16,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query(nativeQuery = true, value =
             "select * from course c where " +
-            "(:title is null or c.title like CONCAT('%', :title, '%')) and " +
+            "(:title is null or LOWER(c.title) like LOWER(CONCAT('%', :title, '%'))) and " +
             "((:difficulties) is null or c.difficulty in (:difficulties)) and " +
             "(:priceMin is null or c.price >= :priceMin) and " +
             "(:priceMax is null or c.price <= :priceMax) and " +
@@ -36,9 +36,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @Query(nativeQuery = true, value =
             "select c.* from course c " +
                     "inner join (" +
-                    "select ubc.course_user_id as uid, ubc.bought_courses_id as cid from user_bought_courses ubc " +
+                    "select ubc.course_user_id as uid, ubc.bought_courses_id as cid from course_user_bought_courses ubc " +
                     "union " +
-                    "select urc.course_user_id as uid, urc.released_courses_id as cid from user_released_courses urc" +
+                    "select urc.course_user_id as uid, urc.released_courses_id as cid from course_user_released_courses urc" +
                     ") uc on " +
                     "uc.cid = c.id and " +
                     "c.id = :courseId and " +

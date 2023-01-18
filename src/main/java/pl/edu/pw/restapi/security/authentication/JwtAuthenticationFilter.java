@@ -16,16 +16,16 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 
-public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     private static final String TOKEN_HEADER = "Authorization";
     private static final String TOKEN_PREFIX = "Bearer ";
     private final UserService userService;
     private final JwtService jwtService;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager,
-                                  JwtService jwtService,
-                                  UserService userDetailsService) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
+                                   JwtService jwtService,
+                                   UserService userDetailsService) {
         super(authenticationManager);
         this.userService = userDetailsService;
         this.jwtService = jwtService;
